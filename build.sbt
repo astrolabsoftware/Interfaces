@@ -4,6 +4,7 @@ version := "0.1"
 
 scalaVersion := "2.11.8"
 
-// https://mvnrepository.com/artifact/net.java.dev.jna/jna
 libraryDependencies += "net.java.dev.jna" % "jna" % "4.5.1"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.0"  % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.1.0" % "provided"
 
