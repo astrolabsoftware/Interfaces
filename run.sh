@@ -14,5 +14,6 @@ spark-submit \
   --master local[*] \
   --class ca.HelloWorld \
   --jars=${jna} \
+  --files=/home/christian.arnault/tjna/libsum.so \
   target/scala-${SBT_VERSION_SPARK}/tjna_2.11-0.1.jar 
 
