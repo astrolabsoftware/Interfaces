@@ -66,6 +66,28 @@ object Libraries {
 
 - Exchanging arrays
 
+We may pass an array to the external code. The array can be modified in place.
+
+suppose yu create a C function that changes an array as follows:
+
+```
+
+void myarray(double array[], int arraylen) {
+  int i = 0;
+  for (i=0; i < arraylen; i++) { array[i] *= 2; }
+}
+
+
+```
+
+
+```
+
+    val a = Array[Double](...)
+    Libraries.mul.myarray(a, a.length)
+
+
+```
 
 
 How use external functions in a Spark pipeline
