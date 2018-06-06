@@ -13,12 +13,14 @@ import org.apache.spark.SparkFiles
 trait EntryPoints extends Library {
   def mysum(x: Int, y: Int): Int
   def mymultiply(x: Double, y: Double): Double
-  def myarray(x: Array[Double], arrayln: Int): Unit
+  def myarray(x: Array[Double], array_size: Int): Unit
+  def cos(angle: Double): Double
 }
 
 object Libraries {
   def sum = Native.loadLibrary("sum", classOf[EntryPoints]).asInstanceOf[EntryPoints]
   def mul = Native.loadLibrary("mul", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+  def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
 }
 
 // Building loader for the two libraries
@@ -33,12 +35,43 @@ object LibraryLoader {
 }
 
 object HelloWorld {
+  def time[R](text: String, block: => R, loops: Int = 1): R = {
+    val t0 = System.nanoTime()
+    val result = block
+    val t1 = System.nanoTime()
+
+    var dt:Double = ((t1 - t0)/loops.toDouble).asInstanceOf[Double] / 1000000000.0
+
+    val unit = "S"
+
+    println("\n" + text + "> Elapsed time:" + " " + dt + " " + unit)
+
+    result
+  }
+
   def main(args: Array[String]) {
     println("HelloWorld")
 
     val r1 = Libraries.sum.mysum(1, 2)
     val r2 = Libraries.mul.mymultiply(1.111, 2.222)
     println("r1 = " + r1.toString + " r2 = " + r2.toString)
+
+    time("scala cos", {
+      for (i <- 0 to 100000)
+      {
+        val angle = 12.0
+        math.cos(angle)
+      }
+    }, 100000)
+
+
+    time("C cos", {
+      for (i <- 0 to 100000)
+      {
+        val angle = 12.0
+        Libraries.m.cos(angle)
+      }
+    }, 100000)
 
     val cores = 100
     val conf = new SparkConf().setMaster("local[*]").setAppName("TSpark").

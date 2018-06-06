@@ -89,6 +89,14 @@ void myarray(double array[], int arraylen) {
 
 ```
 
+- Overhead in calling a C function:
+
+Of course, using JNA has a cost. Comparing calling the math "cos" function from straight Scala and using the C cos through JNA:
+
+  - scala cos> 0.34 µs
+
+  - C cos> 5.3 µs
+
 
 How use external functions in a Spark pipeline
 ==============================================

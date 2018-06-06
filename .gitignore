@@ -1,4 +1,6 @@
 *.so
 *~
 target
+metastore_db
+derby.log
 
