@@ -52,9 +52,12 @@ object HelloWorld {
   def main(args: Array[String]) {
     println("HelloWorld")
 
+    println("===== Calling simple functions with numeric scalars")
     val r1 = Libraries.sum.mysum(1, 2)
     val r2 = Libraries.mul.mymultiply(1.111, 2.222)
     println("r1 = " + r1.toString + " r2 = " + r2.toString)
+
+    println("===== Comparing overhead from Scala versus C")
 
     time("scala cos", {
       for (i <- 0 to 100000)
@@ -80,6 +83,8 @@ object HelloWorld {
 
     val nil: List[Double] = Nil
 
+    println("===== Launch a Spark pipeline that calls C functions via JNA")
+
     val sc = new SparkContext(conf)
     val l = sc.parallelize((1 to 10)).map(x => {
       LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)
@@ -90,8 +95,21 @@ object HelloWorld {
       aggregate(nil)((x, y) => y :: x, (x, y) => y ::: x).toArray
     println(l.mkString(" "))
 
+    println("===== Call a C function that modifies a Scala array")
+
     Libraries.mul.myarray(l, l.length)
     println(l.mkString(" "))
+
+    println("===== Call a C function that modifies a large Scala array")
+
+    val rand = scala.util.Random
+    val a = (for (i <- 1 to 1000*1000*1000) yield rand.nextDouble).toArray
+    val before = a.sum
+    time("Large array", Libraries.mul.myarray(a, a.length))
+    val after = a.sum
+
+    println (s"Apply function to an array: sum $before $after")
+
   }
 }
 
