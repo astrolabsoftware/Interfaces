@@ -10,6 +10,8 @@ sbt ++${SBT_VERSION} package
 here=`pwd`
 jna=~/.ivy2/cache/net.java.dev.jna/jna/jars/jna-4.5.1.jar
 
+export LD_LIBRARY_PATH=`pwd`
+
 # Run it!
 spark-submit \
   --master local[*] \
