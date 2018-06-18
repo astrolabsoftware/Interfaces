@@ -1,0 +1,50 @@
+
+// Building loader for the two libraries
+object LibraryLoader {
+  lazy val loadsum = {
+    System.load(SparkFiles.get("libsum.so"))
+  }
+  lazy val loadmul = {
+    System.load(SparkFiles.get("libmul.so"))
+  }
+
+}
+
+
+def test_Spark = {
+
+  import org.apache.spark.SparkContext._
+  import org.apache.spark.SparkConf
+  import org.apache.spark.sql.SparkSession
+  import org.apache.spark.sql.SQLContext
+  import org.apache.spark.SparkContext
+  import org.apache.spark.SparkFiles
+
+
+  val cores = 100
+  val conf = new SparkConf().setMaster("local[*]").setAppName("TSpark").
+    set("spark.cores.max", s"$cores").
+    set("spark.executor.memory", "200g")
+
+
+  println("===== Launch a Spark pipeline that calls C functions via JNA")
+
+  val nil: List[Double] = Nil
+
+  val sc = new SparkContext(conf)
+  val l = sc.parallelize((1 to 10)).map(x => {
+    LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)
+  }).
+    map(x => {
+      LibraryLoader.loadmul; Libraries.mul.mymultiply(x.toDouble, 0.5)
+    }).
+    aggregate(nil)((x, y) => y :: x, (x, y) => y ::: x).toArray
+  println(l.mkString(" "))
+
+  println("===== Call a C function that modifies a Scala array")
+
+  Libraries.mul.myarray(l, l.length)
+  println(l.mkString(" "))
+}
+
+

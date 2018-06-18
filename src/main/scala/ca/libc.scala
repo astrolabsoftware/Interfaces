@@ -1,3 +1,4 @@
+
 package ca
 
 import com.sun.jna.{Library, Native, Platform}
@@ -8,6 +9,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkFiles
+
 
 // declaring to JNA
 trait EntryPoints extends Library {
@@ -22,6 +24,7 @@ object Libraries {
   def mul = Native.loadLibrary("mul", classOf[EntryPoints]).asInstanceOf[EntryPoints]
   def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
 }
+
 
 // Building loader for the two libraries
 object LibraryLoader {
@@ -40,13 +43,41 @@ object HelloWorld {
     val result = block
     val t1 = System.nanoTime()
 
-    var dt:Double = ((t1 - t0)/loops.toDouble).asInstanceOf[Double] / 1000000000.0
+    var dt:Double = ((t1 - t0)/loops.toDouble).asInstanceOf[Double] / (1000.0*1000.0*1000.0)
 
-    val unit = "S"
+    val unit = "s"
 
     println("\n" + text + "> Elapsed time:" + " " + dt + " " + unit)
 
     result
+  }
+
+  def test_Spark = {
+
+    val cores = 100
+    val conf = new SparkConf().setMaster("local[*]").setAppName("TSpark").
+      set("spark.cores.max", s"$cores").
+      set("spark.executor.memory", "200g")
+
+
+    println("===== Launch a Spark pipeline that calls C functions via JNA")
+
+    val nil: List[Double] = Nil
+
+    val sc = new SparkContext(conf)
+    val l = sc.parallelize((1 to 10)).map(x => {
+      LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)
+    }).
+      map(x => {
+        LibraryLoader.loadmul; Libraries.mul.mymultiply(x.toDouble, 0.5)
+      }).
+      aggregate(nil)((x, y) => y :: x, (x, y) => y ::: x).toArray
+    println(l.mkString(" "))
+
+    println("===== Call a C function that modifies a Scala array")
+
+    Libraries.mul.myarray(l, l.length)
+    println(l.mkString(" "))
   }
 
   def main(args: Array[String]) {
@@ -76,39 +107,63 @@ object HelloWorld {
       }
     }, 100000)
 
-    val cores = 100
-    val conf = new SparkConf().setMaster("local[*]").setAppName("TSpark").
-      set("spark.cores.max", s"$cores").
-      set("spark.executor.memory", "200g")
-
-    val nil: List[Double] = Nil
-
-    println("===== Launch a Spark pipeline that calls C functions via JNA")
-
-    val sc = new SparkContext(conf)
-    val l = sc.parallelize((1 to 10)).map(x => {
-      LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)
-    }).
-      map(x => {
-        LibraryLoader.loadmul; Libraries.mul.mymultiply(x.toDouble, 0.5)
-      }).
-      aggregate(nil)((x, y) => y :: x, (x, y) => y ::: x).toArray
-    println(l.mkString(" "))
-
-    println("===== Call a C function that modifies a Scala array")
-
-    Libraries.mul.myarray(l, l.length)
-    println(l.mkString(" "))
+    if (true) test_Spark
 
     println("===== Call a C function that modifies a large Scala array")
 
     val rand = scala.util.Random
-    val a = (for (i <- 1 to 1000*1000*1000) yield rand.nextDouble).toArray
-    val before = a.sum
-    time("Large array", Libraries.mul.myarray(a, a.length))
-    val after = a.sum
 
-    println (s"Apply function to an array: sum $before $after")
+    // val a = (for (i <- 1 to 10*1000*1000) yield rand.nextDouble).toArray
+
+    val megas = 1
+    val a = (for (i <- 1 to megas * 1000 * 1000) yield rand.nextDouble).toArray
+
+    var result: Double = 0.0
+
+    val iterations = 100
+    time("Copy Large array", {
+      for (i <- 0 to iterations) {
+        val b = a.clone()
+        val before = b.sum
+
+        // println(s"Apply function to an array: sum $before")
+        result = before
+      }
+      result
+    }, iterations)
+
+    println(s"Copy Large array: $result")
+
+    time("Using large array in Scala", {
+      result = 0.0
+      for (i <- 0 to iterations) {
+      val b = a.clone()
+      val before = b.sum
+      val after = b.map(_ * 2.0).sum
+
+      //println (s"Apply function to an array: sum $before $after")
+        result += after
+      }
+      result
+    }, iterations)
+
+    println (s"Apply function to an array using Scala map: $result")
+
+    time("Using large array from C", {
+      result = 0.0
+      for (i <- 0 to iterations) {
+      val b = a.clone()
+      val before = b.sum
+      Libraries.mul.myarray(b, b.length)
+      val after = b.sum
+
+      //println (s"Apply function to an array: sum $before $after")
+        result += after
+      }
+      result
+    }, iterations)
+
+    println (s"Apply function to an array calling a C function: $result")
 
   }
 }
