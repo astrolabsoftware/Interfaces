@@ -119,11 +119,18 @@ transparently deployed to all workers
 Various tutos to explicit use cases
 ===================================
 
-For every tuto:
+References:
 
-- One C module: native_udf.c + native_udf.h
-- One Java file to declare the entry points: CUDF.java
-- One Java application : App.java
+- https://github.com/java-native-access/jna
+- https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
+- https://java-native-access.github.io/jna/4.2.0/overview-summary.html 
+
+
+This tuto directory includes:
+
+- One C module: src/native_udf.c + src/native_udf.h built into the linux directory
+- One Java file to declare the entry points: ca/CUDF.java
+- One Java application : ca/App.java
 - One Makefile implementing some targets:
     + make clean
     + make lib
