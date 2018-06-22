@@ -2,5 +2,6 @@
 
 gcc -fPIC -shared -o libsum.so Sum.c
 gcc -fPIC -shared -o libmul.so Mul.c
+gcc -fPIC -shared -o libpt.so Point.c
 
 

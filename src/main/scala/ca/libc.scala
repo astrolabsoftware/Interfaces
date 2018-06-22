@@ -1,7 +1,6 @@
 
 package ca
 
-import scala.collection.JavaConverters._
 import com.sun.jna.{Library, Native, Platform, Structure}
 
 import org.apache.spark.SparkContext._
@@ -14,17 +13,16 @@ import org.apache.spark.SparkFiles
 
 trait EntryPoints extends Library {
   def mysum(x: Int, y: Int): Int
-
   def mymultiply(x: Double, y: Double): Double
-
   def myarray(x: Array[Double], array_size: Int): Unit
-
   def cos(angle: Double): Double
+  def translate(pt: ca.Point.P, x: Double, y: Double, z: Double): ca.Point.P
 }
 
 object Libraries {
   def sum = Native.loadLibrary("sum", classOf[EntryPoints]).asInstanceOf[EntryPoints]
   def mul = Native.loadLibrary("mul", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+  def pt = Native.loadLibrary("pt", classOf[EntryPoints]).asInstanceOf[EntryPoints]
   def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
 }
 
@@ -166,6 +164,10 @@ object HelloWorld {
 
     println (s"Apply function to an array calling a C function: $result")
 
+    val pt = new ca.Point.P();
+    val r3 = Libraries.pt.translate(pt, 100.0, 100.0, 100.0);
+
+    println(s"Translate a Point x=${pt.x} y=${pt.y} z=${pt.z}")
   }
 }
 
