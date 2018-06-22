@@ -3,7 +3,7 @@
 test code to experiment JNA + Scala + Spark
 
 How to link C/C++/Fortran -> Scala
-==============================
+==================================
 
 - we consider a library with offering entry points (C/C++/Fortran)
 
@@ -96,6 +96,18 @@ Of course, using JNA has a cost. Comparing calling the math "cos" function from 
   - scala cos> 0.34 µs
 
   - C cos> 5.3 µs
+
+Exchanging structures
+=====================
+
+At a first approach we consider the exchange through pointers.
+
+A C structure will be declared as a derived Java/Scala class of the jna's abstract "Structure" class.
+This class only has to implement one abstract method: "getFieldOrder" that returns a List<String> giving
+the ordered list of field names of the structure (to help JNA to perform introspection to the C objects).
+
+Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
+
 
 
 How use external functions in a Spark pipeline
