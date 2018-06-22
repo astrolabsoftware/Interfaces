@@ -11,19 +11,28 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkFiles
 
 
-trait EntryPoints extends Library {
+trait SumEntryPoints extends Library {
   def mysum(x: Int, y: Int): Int
+}
+
+trait MulEntryPoints extends Library {
   def mymultiply(x: Double, y: Double): Double
   def myarray(x: Array[Double], array_size: Int): Unit
-  def cos(angle: Double): Double
+}
+
+trait PointEntryPoints extends Library with ca.Point{
   def translate(pt: ca.Point.P, x: Double, y: Double, z: Double): ca.Point.P
 }
 
+trait MathEntryPoints extends Library {
+  def cos(angle: Double): Double
+}
+
 object Libraries {
-  def sum = Native.loadLibrary("sum", classOf[EntryPoints]).asInstanceOf[EntryPoints]
-  def mul = Native.loadLibrary("mul", classOf[EntryPoints]).asInstanceOf[EntryPoints]
-  def pt = Native.loadLibrary("pt", classOf[EntryPoints]).asInstanceOf[EntryPoints]
-  def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+  def sum = Native.loadLibrary("sum", classOf[SumEntryPoints]).asInstanceOf[SumEntryPoints]
+  def mul = Native.loadLibrary("mul", classOf[MulEntryPoints]).asInstanceOf[MulEntryPoints]
+  def pt = Native.loadLibrary("pt", classOf[PointEntryPoints]).asInstanceOf[PointEntryPoints]
+  def m = Native.loadLibrary("m", classOf[MathEntryPoints]).asInstanceOf[MathEntryPoints]
 }
 
 // Building loader for the two libraries
@@ -106,7 +115,7 @@ object HelloWorld {
       }
     }, 100000)
 
-    if (false) test_Spark
+    if (true) test_Spark
 
     println("===== Call a C function that modifies a large Scala array")
 

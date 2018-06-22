@@ -1,14 +1,13 @@
 
 package ca;
 
-import com.sun.jna.Library;
 import com.sun.jna.Structure;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public interface Point extends Library {
+public interface Point {
     class P extends Structure {
         protected List getFieldOrder() {
             return Arrays.asList(new String[]{"x", "y", "z"});
