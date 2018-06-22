@@ -8,3 +8,12 @@ libraryDependencies += "net.java.dev.jna" % "jna" % "4.5.1"
 libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.0"  % "provided"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.1.0" % "provided"
 
+// libraryDependencies += ""
+
+lazy val hello = taskKey[Unit]("An example task")
+
+lazy val root = (project in file("."))
+  .settings(
+    hello := { println("Hello!") }
+  )
+

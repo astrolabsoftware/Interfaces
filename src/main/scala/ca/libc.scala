@@ -1,7 +1,8 @@
 
 package ca
 
-import com.sun.jna.{Library, Native, Platform}
+import scala.collection.JavaConverters._
+import com.sun.jna.{Library, Native, Platform, Structure}
 
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
@@ -11,11 +12,13 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkFiles
 
 
-// declaring to JNA
 trait EntryPoints extends Library {
   def mysum(x: Int, y: Int): Int
+
   def mymultiply(x: Double, y: Double): Double
+
   def myarray(x: Array[Double], array_size: Int): Unit
+
   def cos(angle: Double): Double
 }
 
@@ -25,7 +28,6 @@ object Libraries {
   def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
 }
 
-
 // Building loader for the two libraries
 object LibraryLoader {
   lazy val loadsum = {
@@ -34,7 +36,6 @@ object LibraryLoader {
   lazy val loadmul = {
     System.load(SparkFiles.get("libmul.so"))
   }
-
 }
 
 object HelloWorld {
@@ -107,7 +108,7 @@ object HelloWorld {
       }
     }, 100000)
 
-    if (true) test_Spark
+    if (false) test_Spark
 
     println("===== Call a C function that modifies a large Scala array")
 

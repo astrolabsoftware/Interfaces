@@ -1,0 +1,6 @@
+
+mvn archetype:generate -DgroupId=ca -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+(cd src/main/C; gcc -shared -fPIC -c helloworld.c -o helloworld.so)
+
+
