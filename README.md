@@ -113,7 +113,21 @@ main command line.
 
 ```
 
-It shou be noted that the loader operation will ensure that the shared library(ies) will be serialized, then
+It should be noted that the loader operation will ensure that the shared library(ies) will be serialized, then
 transparently deployed to all workers
 
+Various tutos to explicit use cases
+===================================
+
+For every tuto:
+
+- One C module: native_udf.c + native_udf.h
+- One Java file to declare the entry points: CUDF.java
+- One Java application : App.java
+- One Makefile implementing some targets:
+    + make clean
+    + make lib
+    + make classes
+    + make all = lib + classes
+    + make run triggers all
 

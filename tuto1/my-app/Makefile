@@ -6,10 +6,10 @@ LIBDIR = linux
 SRCDIR = src
 JAVASRC = ca
 
-NATIVE = helloworld
+NATIVE = native_udf
 LIB = lib$(NATIVE).so
 LIBSOURCES = $(SRCDIR)/$(NATIVE).c
-CLASSES = $(JAVASRC)/App.class $(JAVASRC)/CHelloWorld.class
+CLASSES = $(JAVASRC)/App.class $(JAVASRC)/CUDF.class
 
 all: lib classes
 	echo "all done"
@@ -26,7 +26,7 @@ clean:
 classes : $(CLASSES)
 	echo "classes done"
 
-$(CLASSES): $(JAVASRC)/App.java $(JAVASRC)/CHelloWorld.java
+$(CLASSES): $(JAVASRC)/App.java $(JAVASRC)/CUDF.java
 	javac -cp $(JNA) $(JAVASRC)/*.java
 
 run: all

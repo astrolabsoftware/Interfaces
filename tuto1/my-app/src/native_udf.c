@@ -1,11 +1,11 @@
 
 
-#include "helloworld.h"
+#include "native_udf.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 void display(char* ch) {
-    printf("%s", ch);
+    printf("display> %s", ch);
 }
 
 
