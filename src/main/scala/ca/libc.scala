@@ -11,37 +11,26 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkFiles
 
 
-trait SumEntryPoints extends Library {
+trait EntryPoints extends Library {
   def mysum(x: Int, y: Int): Int
-}
 
-trait MulEntryPoints extends Library {
   def mymultiply(x: Double, y: Double): Double
   def myarray(x: Array[Double], array_size: Int): Unit
-}
 
-trait PointEntryPoints extends Library with ca.Point{
   def translate(pt: ca.Point.P, x: Double, y: Double, z: Double): ca.Point.P
-}
 
-trait MathEntryPoints extends Library {
   def cos(angle: Double): Double
 }
 
 object Libraries {
-  def sum = Native.loadLibrary("sum", classOf[SumEntryPoints]).asInstanceOf[SumEntryPoints]
-  def mul = Native.loadLibrary("mul", classOf[MulEntryPoints]).asInstanceOf[MulEntryPoints]
-  def pt = Native.loadLibrary("pt", classOf[PointEntryPoints]).asInstanceOf[PointEntryPoints]
-  def m = Native.loadLibrary("m", classOf[MathEntryPoints]).asInstanceOf[MathEntryPoints]
+  def native = Native.loadLibrary("native_udf", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+  def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
 }
 
 // Building loader for the two libraries
 object LibraryLoader {
-  lazy val loadsum = {
-    System.load(SparkFiles.get("libsum.so"))
-  }
-  lazy val loadmul = {
-    System.load(SparkFiles.get("libmul.so"))
+  lazy val loadnative = {
+    System.load(SparkFiles.get("libnative_udf.so"))
   }
 }
 
@@ -74,17 +63,17 @@ object HelloWorld {
 
     val sc = new SparkContext(conf)
     val l = sc.parallelize((1 to 10)).map(x => {
-      LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)
+      LibraryLoader.loadnative; Libraries.native.mysum(x, 12)
     }).
       map(x => {
-        LibraryLoader.loadmul; Libraries.mul.mymultiply(x.toDouble, 0.5)
+        LibraryLoader.loadnative; Libraries.native.mymultiply(x.toDouble, 0.5)
       }).
       aggregate(nil)((x, y) => y :: x, (x, y) => y ::: x).toArray
     println(l.mkString(" "))
 
     println("===== Call a C function that modifies a Scala array")
 
-    Libraries.mul.myarray(l, l.length)
+    Libraries.native.myarray(l, l.length)
     println(l.mkString(" "))
   }
 
@@ -92,8 +81,8 @@ object HelloWorld {
     println("HelloWorld")
 
     println("===== Calling simple functions with numeric scalars")
-    val r1 = Libraries.sum.mysum(1, 2)
-    val r2 = Libraries.mul.mymultiply(1.111, 2.222)
+    val r1 = Libraries.native.mysum(1, 2)
+    val r2 = Libraries.native.mymultiply(1.111, 2.222)
     println("r1 = " + r1.toString + " r2 = " + r2.toString)
 
     println("===== Comparing overhead from Scala versus C")
@@ -162,7 +151,7 @@ object HelloWorld {
       for (i <- 0 to iterations) {
       val b = a.clone()
       val before = b.sum
-      Libraries.mul.myarray(b, b.length)
+      Libraries.native.myarray(b, b.length)
       val after = b.sum
 
       //println (s"Apply function to an array: sum $before $after")
@@ -174,7 +163,7 @@ object HelloWorld {
     println (s"Apply function to an array calling a C function: $result")
 
     val pt = new ca.Point.P();
-    val r3 = Libraries.pt.translate(pt, 100.0, 100.0, 100.0);
+    val r3 = Libraries.native.translate(pt, 100.0, 100.0, 100.0);
 
     println(s"Translate a Point x=${pt.x} y=${pt.y} z=${pt.z}")
   }
