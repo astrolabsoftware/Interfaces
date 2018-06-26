@@ -109,6 +109,38 @@ the ordered list of field names of the structure (to help JNA to perform introsp
 Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
 
 
+Using values by reference (ie: using pointers)
+==============================================
+
+A value (in the Scala/Java world) can be vewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
+(and XxxByReference).
+
+```
+======================  C ===============================
+void modify(int* ptr);
+void modify(int* ptr) {
+  *ptr = 12;
+}
+======================  C ===============================
+
+======================  Scala ===========================
+import com.sun.jna.ptr.{IntByReference}
+
+trait EntryPoints extends Library {
+  def modify(ptr: IntByReference)
+}
+
+...
+
+    val ptr = new IntByReference(10)
+    Libraries.native.modify(ptr)
+    println(s"ptr = ${ptr.getValue}")
+
+...
+
+======================  Scala ===========================
+```
+
 
 How use external functions in a Spark pipeline
 ==============================================
@@ -137,7 +169,7 @@ References:
 - https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
 - https://java-native-access.github.io/jna/4.2.0/overview-summary.html 
 - http://jnaexamples.blogspot.com/2012/03/java-native-access-is-easy-way-to.html
-
+- https://www.sderosiaux.com/2016/08/03/jna-java-native-access-enjoy-the-native-functions
 
 This tuto directory includes:
 

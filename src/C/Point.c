@@ -1,5 +1,7 @@
 
 
+#include <stdlib.h>
+
 // Structure used by pointer
 
 typedef struct _Point {
@@ -7,6 +9,7 @@ typedef struct _Point {
 } Point;
 
 Point* translate(Point* pt, double dx, double dy, double dz);
+void modify(int* ptr);
 
 Point* translate(Point* pt, double dx, double dy, double dz) {
     pt->x += dx;
@@ -16,3 +19,6 @@ Point* translate(Point* pt, double dx, double dy, double dz) {
     return pt;
 }
 
+void modify(int* ptr) {
+  *ptr = 12;
+}

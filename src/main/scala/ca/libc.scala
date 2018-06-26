@@ -1,7 +1,8 @@
 
 package ca
 
-import com.sun.jna.{Library, Native, Platform, Structure}
+import com.sun.jna.{Library, Native, Platform, Structure, Pointer}
+import com.sun.jna.ptr.{IntByReference}
 
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
@@ -18,6 +19,7 @@ trait EntryPoints extends Library {
   def myarray(x: Array[Double], array_size: Int): Unit
 
   def translate(pt: ca.Point.P, x: Double, y: Double, z: Double): ca.Point.P
+  def modify(ptr: IntByReference)
 
   def cos(angle: Double): Double
 }
@@ -76,6 +78,8 @@ object HelloWorld {
     Libraries.native.myarray(l, l.length)
     println(l.mkString(" "))
   }
+
+  def main(args: Array[String]) {
 
     println("===== Calling simple functions with numeric scalars")
     val r1 = Libraries.native.mysum(1, 2)
@@ -163,6 +167,10 @@ object HelloWorld {
     val r3 = Libraries.native.translate(pt, 100.0, 100.0, 100.0);
 
     println(s"Translate a Point x=${pt.x} y=${pt.y} z=${pt.z}")
+
+    val ptr = new IntByReference(10)
+    Libraries.native.modify(ptr)
+    println(s"ptr = ${ptr.getValue}")
   }
 }
 
