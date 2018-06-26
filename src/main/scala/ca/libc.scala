@@ -77,9 +77,6 @@ object HelloWorld {
     println(l.mkString(" "))
   }
 
-  def main(args: Array[String]) {
-    println("HelloWorld")
-
     println("===== Calling simple functions with numeric scalars")
     val r1 = Libraries.native.mysum(1, 2)
     val r2 = Libraries.native.mymultiply(1.111, 2.222)

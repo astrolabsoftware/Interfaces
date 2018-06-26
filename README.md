@@ -136,6 +136,7 @@ References:
 - https://github.com/java-native-access/jna
 - https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
 - https://java-native-access.github.io/jna/4.2.0/overview-summary.html 
+- http://jnaexamples.blogspot.com/2012/03/java-native-access-is-easy-way-to.html
 
 
 This tuto directory includes:
