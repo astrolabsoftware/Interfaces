@@ -1,9 +1,11 @@
 
 package ca
 
+// Imports for JNA
 import com.sun.jna.{Library, Native, Platform, Structure, Pointer}
 import com.sun.jna.ptr.{IntByReference}
 
+// Imports for Spark
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
@@ -12,7 +14,16 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkFiles
 
 
-trait EntryPoints extends Library {
+/*
+
+We have defined some C functions in src/C.
+We have to declare a Scala representation for all those functions
+In addition, one Java representation of the Point structure is available in java/ca/Point.java since
+JNA cannot accept getFieldOrder inside a Scala (the fields must be public)
+However, all functions using the Point type can be declared from Scala
+
+ */
+trait MyEntryPoints extends Library {
   def mysum(x: Int, y: Int): Int
 
   def mymultiply(x: Double, y: Double): Double
@@ -20,19 +31,31 @@ trait EntryPoints extends Library {
 
   def translate(pt: ca.Point.P, x: Double, y: Double, z: Double): ca.Point.P
   def modify(ptr: IntByReference)
+}
 
+// This object loads the shared library for all my C functions
+// (refer to the Makefile to build this shared library)
+object MyLibraries {
+  def my_lib = Native.loadLibrary("my_udf", classOf[MyEntryPoints]).asInstanceOf[MyEntryPoints]
+}
+
+/*
+
+This declares one entry points of the "m" system library
+
+ */
+trait MathEntryPoints extends Library {
   def cos(angle: Double): Double
 }
 
-object Libraries {
-  def native = Native.loadLibrary("native_udf", classOf[EntryPoints]).asInstanceOf[EntryPoints]
-  def m = Native.loadLibrary("m", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+object MathLibraries {
+  def m = Native.loadLibrary("m", classOf[MathEntryPoints]).asInstanceOf[MathEntryPoints]
 }
 
 // Building loader for the two libraries
 object LibraryLoader {
-  lazy val loadnative = {
-    System.load(SparkFiles.get("libnative_udf.so"))
+  lazy val load_my = {
+    System.load(SparkFiles.get("libmy_udf.so"))
   }
 }
 
@@ -65,25 +88,25 @@ object HelloWorld {
 
     val sc = new SparkContext(conf)
     val l = sc.parallelize((1 to 10)).map(x => {
-      LibraryLoader.loadnative; Libraries.native.mysum(x, 12)
+      LibraryLoader.load_my; MyLibraries.my_lib.mysum(x, 12)
     }).
       map(x => {
-        LibraryLoader.loadnative; Libraries.native.mymultiply(x.toDouble, 0.5)
+        LibraryLoader.load_my; MyLibraries.my_lib.mymultiply(x.toDouble, 0.5)
       }).
       aggregate(nil)((x, y) => y :: x, (x, y) => y ::: x).toArray
     println(l.mkString(" "))
 
     println("===== Call a C function that modifies a Scala array")
 
-    Libraries.native.myarray(l, l.length)
+    MyLibraries.my_lib.myarray(l, l.length)
     println(l.mkString(" "))
   }
 
   def main(args: Array[String]) {
 
     println("===== Calling simple functions with numeric scalars")
-    val r1 = Libraries.native.mysum(1, 2)
-    val r2 = Libraries.native.mymultiply(1.111, 2.222)
+    val r1 = MyLibraries.my_lib.mysum(1, 2)
+    val r2 = MyLibraries.my_lib.mymultiply(1.111, 2.222)
     println("r1 = " + r1.toString + " r2 = " + r2.toString)
 
     println("===== Comparing overhead from Scala versus C")
@@ -101,7 +124,7 @@ object HelloWorld {
       for (i <- 0 to 100000)
       {
         val angle = 12.0
-        Libraries.m.cos(angle)
+        MathLibraries.m.cos(angle)
       }
     }, 100000)
 
@@ -152,7 +175,7 @@ object HelloWorld {
       for (i <- 0 to iterations) {
       val b = a.clone()
       val before = b.sum
-      Libraries.native.myarray(b, b.length)
+      MyLibraries.my_lib.myarray(b, b.length)
       val after = b.sum
 
       //println (s"Apply function to an array: sum $before $after")
@@ -164,12 +187,12 @@ object HelloWorld {
     println (s"Apply function to an array calling a C function: $result")
 
     val pt = new ca.Point.P();
-    val r3 = Libraries.native.translate(pt, 100.0, 100.0, 100.0);
+    val r3 = MyLibraries.my_lib.translate(pt, 100.0, 100.0, 100.0);
 
     println(s"Translate a Point x=${pt.x} y=${pt.y} z=${pt.z}")
 
     val ptr = new IntByReference(10)
-    Libraries.native.modify(ptr)
+    MyLibraries.my_lib.modify(ptr)
     println(s"ptr = ${ptr.getValue}")
   }
 }

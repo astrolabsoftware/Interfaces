@@ -112,16 +112,19 @@ Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
 Using values by reference (ie: using pointers)
 ==============================================
 
-A value (in the Scala/Java world) can be vewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
-(and XxxByReference).
+A value (in the Scala/Java world) can be viewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
+(and XxxByReference for other Scala/Java).
+
+(cf. https://java-native-access.github.io/jna/4.2.1/com/sun/jna/ptr/ByReference.html) 
 
 ```
 ======================  C ===============================
 void modify(int* ptr);
+
 void modify(int* ptr) {
   *ptr = 12;
 }
-======================  C ===============================
+=========================================================
 
 ======================  Scala ===========================
 import com.sun.jna.ptr.{IntByReference}
@@ -130,26 +133,24 @@ trait EntryPoints extends Library {
   def modify(ptr: IntByReference)
 }
 
-...
-
+    ...
     val ptr = new IntByReference(10)
     Libraries.native.modify(ptr)
     println(s"ptr = ${ptr.getValue}")
+    ...
 
-...
-
-======================  Scala ===========================
+==========================================================
 ```
 
 
 How use external functions in a Spark pipeline
 ==============================================
 
-The principle is to dynamically load the shared libraries right when it's needed, ie. inside the lambda executed
-in the Spark commands (map/reduce/...) immediately before calling the external functions.
+The principle is to dynamically load the shared libraries right when it's needed, ie. within the lambda, executed
+in the Spark operation (map/reduce/...) right when it's needed, ie. before calling the external functions.
 
 In addition, all shared libraries has to be declared using the `--files <path/xxx.so>` option of the spark-submit
-main command line.
+command line.
 
 ```
 

@@ -6,7 +6,7 @@ LIBDIR = .
 SRCDIR = src/C
 JAVASRC = ca
 
-NATIVE = native_udf
+NATIVE = my_udf
 LIB = lib$(NATIVE).so
 LIBSOURCES = $(SRCDIR)/Mul.c $(SRCDIR)/Point.c $(SRCDIR)/Sum.c
 
