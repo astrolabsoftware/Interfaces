@@ -29,6 +29,9 @@ trait MyEntryPoints extends Library {
   def mymultiply(x: Double, y: Double): Double
   def myarray(x: Array[Double], array_size: Int): Unit
 
+  def myconcat(a: String, b: String): String;
+  def myfree(a: String): Unit;
+
   def translate(pt: ca.Point.P, x: Double, y: Double, z: Double): ca.Point.P
   def modify(ptr: IntByReference)
 }
@@ -194,6 +197,10 @@ object HelloWorld {
     val ptr = new IntByReference(10)
     MyLibraries.my_lib.modify(ptr)
     println(s"ptr = ${ptr.getValue}")
+
+    val r4 = MyLibraries.my_lib.myconcat("aaaa", "bbbb")
+    println(s"r4 = ${r4}")
+    MyLibraries.my_lib.myfree(r4)
   }
 }
 

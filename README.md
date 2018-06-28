@@ -1,4 +1,4 @@
-# tjna
+t7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES4_
 
 test code to experiment JNA + Scala + Spark
 
@@ -160,6 +160,202 @@ command line.
 
 It should be noted that the loader operation will ensure that the shared library(ies) will be serialized, then
 transparently deployed to all workers
+
+Issues related with C++
+=======================
+
+The Jna's API is only able to understand C types. Then when dealing with C++ coding, a mangling is applied to
+function names (to support mutiple function signatures !!). The declaration of native functions in the Scala/Java
+world has to worry about the exact external naming scheme, thus the mangling has to be considered.
+
+For both reasons it's asked to construct one C flavour of all C++ external functions. Or at least declare them
+in a extern "C" block when possible (when the signature is compatible with a C syntax).
+
+An other important aspect of the C/C++ interfacing to Scala/Java world, is the fact that generally non C/C++ scalar
+types have to be manually allocated (on the heap) and when these objects have to be returned back to the Java world,
+it will be required to take care of their deallocation.
+
+
+The next example shows both the mangling aspect and the manual allocation of the returned value.
+
+We consider une function that concatenates two std::string objects and return the result.
+
+The primary C++ function that operates this operation can be written as follows (we first consider a version that
+returns nothing):
+
+
+```
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+void _myconcat (const string a, const string b)
+{
+    const string r = a + b;
+    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+}
+
+
+```
+
+Of course this function will be mangled and contains C++ types not directly usable in Java. Thefore a C interface
+flavour has to be introduced:
+
+```
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+extern "C" {
+  void myconcat (const char* a, const char* b);
+}
+
+void _myconcat (const string a, const string b):
+
+void myconcat (const char* a, const char* b)
+{
+    cout << "myconcat> " << " a=" << a << " b=" << b << endl;
+    _myconcat(string(a), string(b)).c_str();
+}
+
+void _myconcat (const string a, const string b)
+{
+    const string r = a + b;
+    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+}
+
+
+```
+
+If we look at the public entry points, we understand why the C++ entry point cannot declared as it is:
+
+
+```
+
+> nm libmy_udf.so | egrep " T "
+...
+00000000000010b2 T myconcat
+...
+000000000000122e T _Z9_myconcatNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES4_
+...
+
+```
+
+Then we change the function so as it returns the result of the concatenation:
+
+```
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+extern "C" {
+  const char* myconcat (const char* a, const char* b);
+}
+
+const string _myconcat (const string a, const string b);
+
+const char* myconcat (const char* a, const char* b)
+{
+    static const char* r = _myconcat(string(a), string(b)).c_str();
+    cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+    return r;
+}
+
+const string _myconcat (const string a, const string b)
+{
+    const string r = a + b;
+    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+    return r;
+}
+```
+
+if we run this implementation:
+
+```
+int main()
+{
+  const string result = _myconcat("aa", "bb");
+  cout << "Result = " << result << endl;
+
+
+  const char* result2 = myconcat("aaa", "bbb");
+  cout << "Result = " << result2 << endl;
+
+  return 0;
+}
+
+> ./mytest
+_myconcat>  a=aa b=bb r=aabb
+Result = aabb
+_myconcat>  a=aaa b=bbb r=aaabbb
+myconcat>  a=aaa b=bbb r=a
+Result = @@@
+
+```
+
+The result is lost because the local result computed from the C function is lost after the scope is closed
+(this is not true for the C++ function since the string object is returned by value)
+
+Thus we have to mimic the return by value mechanism by creating a string object (that eventually be
+destroyed).
+
+```
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <stdlib.h>
+
+using namespace std;
+
+extern "C" {
+  const char* myconcat (const char* a, const char* b);
+  void myfree(const void* str);
+}
+
+const string _myconcat (const string a, const string b);
+
+const char* myconcat (const char* a, const char* b)
+{
+    static const char* r = _myconcat(string(a), string(b)).c_str();
+    void* rr = malloc(strlen(r) + 1);
+    cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << " pointer" << rr << endl;
+    strcpy((char*) rr, r);
+    return (char*) rr;
+}
+
+void myfree(const void* str) {
+    cout << "myfree> " << " pointer=" << str << endl;
+    free((void*) str);
+}
+
+const string _myconcat (const string a, const string b)
+{
+    const string r = a + b;
+    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+    return r;
+}
+```
+
+Now the test program will behave properly:
+
+```
+
+> mytest
+_myconcat>  a=aa b=bb r=aabb
+Result = aabb
+_myconcat>  a=aaa b=bbb r=aaabbb
+myconcat>  a=aaa b=bbb r=aaabbb pointer0x1ad2c30
+Result = aaabbb
+myfree>  pointer=0x1ad2c30
+
+```
+
+
+
+
 
 Various tutos to explicit use cases
 ===================================
