@@ -21,20 +21,17 @@
 
 using namespace std;
 
-extern "C" {
-  const char* myconcat (const char* a, const char* b);
-  void myfree(const void* str);
-}
+#include "MyUdf.h"
 
 const string _myconcat (const string a, const string b);
 
 const char* myconcat (const char* a, const char* b)
 {
-    static const char* r = _myconcat(string(a), string(b)).c_str();
-    void* rr = malloc(strlen(r) + 1);
-    cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << " pointer" << rr << endl;
-    strcpy((char*) rr, r);
-    return (char*) rr;
+    static const char* from_cpp = _myconcat(string(a), string(b)).c_str();
+    void* result = malloc(strlen(from_cpp) + 1);
+    cout << "myconcat> " << " a=" << a << " b=" << b << " from_cpp=" << from_cpp << " pointer" << result << endl;
+    strcpy((char*) result, from_cpp);
+    return (char*) result;
 }
 
 void myfree(const void* str) {

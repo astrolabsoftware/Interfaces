@@ -39,3 +39,8 @@ $(LIBDIR)/$(LIB) : $(LIBSOURCES)
 clean:
 	rm -f $(LIBDIR)/$(LIB)
 
+test: hello
+	./hello
+
+hello : $(LIBSOURCES)
+	$(COMPILER) -DMAIN -Wall -g -fPIC -lstdc++ $(LIBSOURCES) -o hello

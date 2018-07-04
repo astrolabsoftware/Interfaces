@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-extern "C" {
-  double mymultiply(double x, double y);
-  void myarray(double array[], int arraylen);
-}
+
+ #include "MyUdf.h"
 
 double mymultiply(double x, double y) {
   return (x * y);

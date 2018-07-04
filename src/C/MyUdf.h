@@ -14,19 +14,33 @@
  * limitations under the License.
  */
 
+#ifndef __MyUdf_h__
+#define __MyUdf_h__
 
-#include <stdlib.h>
-
-#include "MyUdf.h"
-
-Point* translate(Point* pt, double dx, double dy, double dz) {
-    pt->x += dx;
-    pt->y += dy;
-    pt->z += dz;
-
-    return pt;
+extern "C" {
+  double mymultiply(double x, double y);
+  void myarray(double array[], int arraylen);
 }
 
-void modify(int* ptr) {
-  *ptr = 12;
+extern "C" {
+  int mysum(int x, int y);
 }
+
+// Structure used by pointer
+
+typedef struct _Point {
+  double x, y, z;
+} Point;
+
+extern "C" {
+  Point* translate(Point* pt, double dx, double dy, double dz);
+  void modify(int* ptr);
+}
+
+extern "C" {
+  const char* myconcat (const char* a, const char* b);
+  void myfree(const void* str);
+}
+
+
+#endif
