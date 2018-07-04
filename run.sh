@@ -32,7 +32,7 @@ export LD_LIBRARY_PATH=`pwd`
 export JAVA_OPTS="-Xmx8G -Xms8G"
 
 master="--master local[*]"
-class="--class com.astrolab.interfaces.HelloWorld"
+class="--class com.astrolab.Interfaces.HelloWorld"
 jars="--jars=${jna}"
 files="--files=${here}/libmy_udf.so"
 target="target/scala-${SBT_VERSION_SPARK}/interfaces_${SBT_VERSION_SPARK}-${VERSION}.jar"

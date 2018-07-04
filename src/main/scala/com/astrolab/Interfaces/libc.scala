@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.astrolab.interfaces
+package com.astrolab.Interfaces
 
 // Imports for JNA
 import com.sun.jna.{Library, Native, Platform, Structure, Pointer}
@@ -47,7 +47,7 @@ trait MyEntryPoints extends Library {
   def myconcat(a: String, b: String): String;
   def myfree(a: String): Unit;
 
-  def translate(pt: com.astrolab.interfaces.Point.P, x: Double, y: Double, z: Double): com.astrolab.interfaces.Point.P
+  def translate(pt: com.astrolab.Interfaces.Point.P, x: Double, y: Double, z: Double): com.astrolab.Interfaces.Point.P
   def modify(ptr: IntByReference)
 }
 
@@ -204,7 +204,7 @@ object HelloWorld {
 
     println (s"Apply function to an array calling a C function: $result")
 
-    val pt = new com.astrolab.interfaces.Point.P();
+    val pt = new com.astrolab.Interfaces.Point.P();
     val r3 = MyLibraries.my_lib.translate(pt, 100.0, 100.0, 100.0);
 
     println(s"Translate a Point x=${pt.x} y=${pt.y} z=${pt.z}")
