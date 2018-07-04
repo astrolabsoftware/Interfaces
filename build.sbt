@@ -52,3 +52,52 @@ lazy val root = (project in file(".")).
    )
  )
 
+
+
+
+// POM settings for Sonatype
+
+homepage := Some(
+ url("https://github.com/astrolabsoftware/Interfaces")
+)
+
+scmInfo := Some(
+ ScmInfo(
+   url("https://github.com/astrolabsoftware/Interfaces"),
+   " https://github.com/astrolabsoftware/Interfaces.git"
+ )
+)
+
+developers := List(
+ Developer(
+   "JulienPeloton",
+   "Julien Peloton",
+   "peloton@lal.in2p3.fr",
+   url("https://github.com/JulienPeloton")
+ ),
+ Developer(
+ "ChristianArnault",
+ "Christian Arnault",
+ "arnault@lal.in2p3.fr",
+ url("https://github.com/ChristianArnault")
+ ),
+ Developer(
+ "mayurdb",
+ "Mayur Bhosale",
+ "mayurdb31@gmail.com",
+ url("https://github.com/mayurdb")
+ )
+)
+
+licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
+
+publishMavenStyle := true
+
+publishTo := {
+ val nexus = "https://oss.sonatype.org/"
+ if (isSnapshot.value)
+  Some("snapshots" at nexus + "content/repositories/snapshots")
+ else
+  Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+

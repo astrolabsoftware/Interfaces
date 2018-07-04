@@ -32,10 +32,10 @@ export LD_LIBRARY_PATH=`pwd`
 export JAVA_OPTS="-Xmx8G -Xms8G"
 
 master="--master local[*]"
-class="--class ca.HelloWorld"
+class="--class com.astrolab.interfaces.HelloWorld"
 jars="--jars=${jna}"
 files="--files=${here}/libmy_udf.so"
-target="target/scala-${SBT_VERSION_SPARK}/interfaces_2.11-0.1.jar"
+target="target/scala-${SBT_VERSION_SPARK}/interfaces_${SBT_VERSION_SPARK}-${VERSION}.jar"
 
 command="spark-submit ${master} ${class} ${jars} ${files} ${target}"
 

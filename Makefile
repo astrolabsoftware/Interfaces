@@ -21,7 +21,6 @@ JNA=/home/arnault/.ivy2/cache/net.java.dev.jna/jna/jars/jna-4.5.1.jar
 
 LIBDIR = .
 SRCDIR = src/C
-JAVASRC = ca
 
 NATIVE = my_udf
 LIB = lib$(NATIVE).so

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ca;
+package com.astrolab.interfaces;
 
 import com.sun.jna.Structure;
 
