@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+extern "C" {
+  int mysum(int x, int y);
+}
+
 int mysum(int x, int y) {
   return (x+y);
 }

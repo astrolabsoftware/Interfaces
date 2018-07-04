@@ -14,7 +14,7 @@
 # limitations under the License.
 #---------------------------------------------------
 
-COMPILER = gcc
+COMPILER = g++
 CPPFLAGS = -Wall -g -shared -fPIC -lstdc++
 
 JNA=/home/arnault/.ivy2/cache/net.java.dev.jna/jna/jars/jna-4.5.1.jar

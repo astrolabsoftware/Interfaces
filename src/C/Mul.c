@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+extern "C" {
+  double mymultiply(double x, double y);
+  void myarray(double array[], int arraylen);
+}
+
 double mymultiply(double x, double y) {
   return (x * y);
 }

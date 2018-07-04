@@ -36,11 +36,11 @@ class="--class ca.HelloWorld"
 jars="--jars=${jna}"
 files="--files=${here}/libmy_udf.so"
 target="target/scala-${SBT_VERSION_SPARK}/tjna_2.11-0.1.jar"
-jlp="-Djava.library.path=${here}"
+# jlp="-Djava.library.path=${here}"
 
 # Run it!
-echo "spark-submit ${master} ${class} ${jars} ${files} ${jlp} ${target}"
-spark-submit ${master} ${class} ${jars} ${files} ${jlp} ${target}
+echo "spark-submit ${master} ${class} ${jars} ${files} ${target}"
+spark-submit ${master} ${class} ${jars} ${files} ${target}
 
 # scalac
 

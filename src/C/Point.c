@@ -23,8 +23,10 @@ typedef struct _Point {
   double x, y, z;
 } Point;
 
-Point* translate(Point* pt, double dx, double dy, double dz);
-void modify(int* ptr);
+extern "C" {
+  Point* translate(Point* pt, double dx, double dy, double dz);
+  void modify(int* ptr);
+}
 
 Point* translate(Point* pt, double dx, double dy, double dz) {
     pt->x += dx;
