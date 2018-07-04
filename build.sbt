@@ -14,22 +14,41 @@
  * limitations under the License.
  */
 
-name := "Interfaces"
+import Dependencies._
+import xerial.sbt.Sonatype._
 
-version := "0.1"
-
-scalaVersion := "2.11.8"
-
-libraryDependencies += "net.java.dev.jna" % "jna" % "4.5.1"
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.0"  % "provided"
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.1.0" % "provided"
-
-// libraryDependencies += ""
-
-lazy val hello = taskKey[Unit]("An example task")
-
-lazy val root = (project in file("."))
-  .settings(
-    hello := { println("Hello!") }
-  )
+lazy val root = (project in file(".")).
+ settings(
+   inThisBuild(List(
+     version      := "0.1.0"
+   )),
+   scalaVersion := "2.11.8",
+   // Name of the application
+   name := "Interfaces",
+   // Name of the orga
+   organization := "com.github.theastrolab",
+   // Do not execute test in parallel
+   parallelExecution in Test := false,
+   // Fail the test suite if statement coverage is < 70%
+   coverageFailOnMinimum := true,
+   coverageMinimum := 70,
+   // Put nice colors on the coverage report
+   coverageHighlighting := true,
+   // Do not publish artifact in test
+   publishArtifact in Test := false,
+   // Exclude runner class for the coverage
+   coverageExcludedPackages := "<empty>;com.spark3d.examples*",
+   // Excluding Scala library JARs that are included in the binary Scala distribution
+   // assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
+   // Shading to avoid conflicts with pre-installed nom.tam.fits library
+   // Uncomment if you have such conflicts.
+   // assemblyShadeRules in assembly := Seq(ShadeRule.rename("nom.**" -> "new_nom.@1").inAll),
+   // Put dependencies of the library
+   libraryDependencies ++= Seq(
+     "net.java.dev.jna" % "jna" % "4.5.1" % "provided",
+     "org.apache.spark" %% "spark-core" % "2.1.0" % "provided",
+     "org.apache.spark" %% "spark-sql" % "2.1.0" % "provided",
+     scalaTest % Test
+   )
+ )
 
