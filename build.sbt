@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-name := "tjna"
+name := "Interfaces"
 
 version := "0.1"
 
