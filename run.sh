@@ -24,11 +24,11 @@ VERSION=0.1.0
 sbt ++${SBT_VERSION} package
 
 here=`pwd`
-jna=~/.ivy2/cache/net.java.dev.jna/jna/jars/jna-4.5.1.jar
+jna=${HOME}/.ivy2/cache/net.java.dev.jna/jna/jars/jna-4.5.1.jar
 
 heap="-Xms1g"
 
-export LD_LIBRARY_PATH=`pwd`
+export LD_LIBRARY_PATH=${here}
 export JAVA_OPTS="-Xmx8G -Xms8G"
 
 master="--master local[*]"
