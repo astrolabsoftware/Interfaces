@@ -38,22 +38,18 @@ lazy val root = (project in file(".")).
    publishArtifact in Test := false,
    // Exclude runner class for the coverage
    coverageExcludedPackages := "<empty>;com.spark3d.examples*",
-   // Excluding Scala library JARs that are included in the binary Scala distribution
-   // assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
-   // Shading to avoid conflicts with pre-installed nom.tam.fits library
-   // Uncomment if you have such conflicts.
-   // assemblyShadeRules in assembly := Seq(ShadeRule.rename("nom.**" -> "new_nom.@1").inAll),
-   // Put dependencies of the library
+
    libraryDependencies ++= Seq(
      "net.java.dev.jna" % "jna" % "4.5.1" % "provided",
      "org.apache.spark" %% "spark-core" % "2.1.0" % "provided",
      "org.apache.spark" %% "spark-sql" % "2.1.0" % "provided",
-     scalaTest % Test
+     "org.scalactic" %% "scalactic" % "3.0.5" % "test",
+     "org.scalatest" %% "scalatest" % "3.0.5" % "test"
    )
  )
 
 
-
+//      scalaTest % Test
 
 // POM settings for Sonatype
 

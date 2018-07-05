@@ -14,31 +14,10 @@
  * limitations under the License.
  */
 
-package com.astrolab.Interfaces;
 
-import com.sun.jna.Structure;
+#include "MyUdf.h"
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public interface Point {
-    class P extends Structure {
-        protected List getFieldOrder() {
-            return Arrays.asList(new String[]{"x", "y", "z"});
-        }
-
-        public double x = 0, y = 0, z = 0;
-
-        public P clone() {
-            P p = new P();
-            p.x = x;
-            p.y = y;
-            p.z = z;
-            return p;
-        }
-    }
+void myarraymultiply(double array[], int arraylen) {
+  int i = 0;
+  for (i=0; i < arraylen; i++) { array[i] *= 2; }
 }
-
-
-

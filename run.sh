@@ -37,7 +37,9 @@ jars="--jars=${jna}"
 files="--files=${here}/libmy_udf.so"
 target="target/scala-${SBT_VERSION_SPARK}/interfaces_${SBT_VERSION_SPARK}-${VERSION}.jar"
 
-command="spark-submit ${master} ${class} ${jars} ${files} ${target}"
+command="spark-submit ${master} ${class} ${jars} ${target}"
+
+## ${files}
 
 # Run it!
 echo "${command}"

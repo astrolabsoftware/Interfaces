@@ -24,7 +24,7 @@ SRCDIR = src/C
 
 NATIVE = my_udf
 LIB = lib$(NATIVE).so
-LIBSOURCES = $(SRCDIR)/Mul.c $(SRCDIR)/Point.c $(SRCDIR)/Sum.c $(SRCDIR)/Str.cpp
+LIBSOURCES = $(SRCDIR)/Mul.c $(SRCDIR)/Array.c $(SRCDIR)/Point.c $(SRCDIR)/Sum.c $(SRCDIR)/Str.cpp
 
 all: lib
 	echo "all done"

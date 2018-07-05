@@ -19,7 +19,7 @@
 
 extern "C" {
   double mymultiply(double x, double y);
-  void myarray(double array[], int arraylen);
+  void myarraymultiply(double array[], int arraylen);
 }
 
 extern "C" {
