@@ -380,3 +380,55 @@ This tuto directory includes:
     + make all = lib + classes
     + make run triggers all
 
+
+Using the repository
+====================
+
+This development tries to apply the explanations written in this document. This is a SBT based structure,
+ie. sources are located in the "src" directory, with the following structure:
+
+```
+
+src/C           C or C++ sources
+src/main/java   Java sources
+src/main/scala  Scala sources
+src/main/python Python sources
+
+src/test/scala  Unit test scala sources
+
+```
+
+Java & Scala sources are organized in the "com.astrolab.Interfaces...." packages.
+
+At the top level, are the management tools:
+
+- Makefile to build the C/C++ module as a shared library ("libmy_udf.so"). All C/C++ modules are gathered within one single shared library.
+- build.sbt (together with project/* configuration files for SBT) to build and test the Scala elements.
+- run.sh, shell script to run the Spark based application.
+
+Compiling & building
+====================
+
+Building the shared library grouping all C/C++ modules:
+
+```
+> make clean all test
+```
+
+This will create the ./libmy_udf.so shared library containing all C/C++ entry points callable from Java/Scala/Spark
+
+Building the Scala applications:
+
+```
+> export LD_LIBRARY_PATH=`pwd`
+> sbt package
+> sbt test
+```
+
+Running the test program:
+
+```
+> export LD_LIBRARY_PATH=`pwd`
+> ./run.sh
+```
+
