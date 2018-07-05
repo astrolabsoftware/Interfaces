@@ -1,9 +1,23 @@
-t7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES4_
+# Multi Language Interfaces
 
-test code to experiment JNA + Scala + Spark
+This product proposes some way to interface different coding languages implied in the process
+of scientific programming in the context of distributed programming such as Apache Spark,
+and in particular, this concerns the development around the AstroLab Sofware organization, or
+developments using it.
 
-How to link C/C++/Fortran -> Scala
-==================================
+This describes the issues, problems, tools implied in interfacing various languages such as:
+
+- C
+- C++
+- Fortran
+- Java
+- Scala
+- Python
+
+Generally speaking, since we are mainly concerned with the use of Apache Spark, which is mainly coded in Scala,
+we mainly try to interface all scientific oriented languages to Scala.
+
+## How to link C/C++/Fortran -> Scala
 
 - we consider a library with offering entry points (C/C++/Fortran)
 
@@ -97,8 +111,7 @@ Of course, using JNA has a cost. Comparing calling the math "cos" function from 
 
   - C cos> 5.3 µs
 
-Exchanging structures
-=====================
+## Exchanging structures
 
 At a first approach we consider the exchange through pointers.
 
@@ -109,8 +122,7 @@ the ordered list of field names of the structure (to help JNA to perform introsp
 Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
 
 
-Using values by reference (ie: using pointers)
-==============================================
+## Using values by reference (ie: using pointers)
 
 A value (in the Scala/Java world) can be viewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
 (and XxxByReference for other Scala/Java).
@@ -143,8 +155,7 @@ trait EntryPoints extends Library {
 ```
 
 
-How use external functions in a Spark pipeline
-==============================================
+## How use external functions in a Spark pipeline
 
 The principle is to dynamically load the shared libraries right when it's needed, ie. within the lambda, executed
 in the Spark operation (map/reduce/...) right when it's needed, ie. before calling the external functions.
@@ -161,8 +172,7 @@ command line.
 It should be noted that the loader operation will ensure that the shared library(ies) will be serialized, then
 transparently deployed to all workers
 
-Issues related with C++
-=======================
+## Issues related with C++
 
 The Jna's API is only able to understand C types. Then when dealing with C++ coding, a mangling is applied to
 function names (to support mutiple function signatures !!). The declaration of native functions in the Scala/Java
@@ -357,8 +367,7 @@ myfree>  pointer=0x1ad2c30
 
 
 
-Various tutos to explicit use cases
-===================================
+## Various tutos to explicit use cases
 
 References:
 
@@ -381,8 +390,7 @@ This tuto directory includes:
     + make run triggers all
 
 
-Using the repository
-====================
+## Using the repository
 
 This development tries to apply the explanations written in this document. This is a SBT based structure,
 ie. sources are located in the "src" directory, with the following structure:
@@ -406,8 +414,7 @@ At the top level, are the management tools:
 - build.sbt (together with project/* configuration files for SBT) to build and test the Scala elements.
 - run.sh, shell script to run the Spark based application.
 
-Compiling & building
-====================
+## Compiling & building
 
 Building the shared library grouping all C/C++ modules:
 
@@ -431,4 +438,97 @@ Running the test program:
 > export LD_LIBRARY_PATH=`pwd`
 > ./run.sh
 ```
+
+## Utilisation du package Jep pour interfacer Scala et Python.
+
+
+Références:
+
+* https://pypi.python.org/pypi/jep
+* https://github.com/ninia/jep
+
+Un code d'exemple:
+------------------
+
+    val jep = new Jep(new JepConfig().addSharedModules("numpy"))
+
+    jep.eval("import numpy as np")
+
+    val arraySize = 1000000
+
+    jep.set("x", 10)
+    jep.getValue("x")
+    jep.eval("y = np.random.rand(2, 3)")
+    jep.getValue("y.shape")
+    jep.eval("z = np.random.rand(arraySize)")
+    jep.getValue("z.shape")
+
+    {
+      val f = Array.fill(arraySize)(Random.nextFloat)
+      val nd = new NDArray[Array[Float]](f, arraySize)
+      jep.set("t", nd)
+    }
+
+
+Result of the bench:
+--------------------
+
+    x=10>                        Elapsed time: 0.276785568 µs
+    getValue(x)>                 Elapsed time: 7.149102638 µs
+    y = np.random.rand(2, 3)>    Elapsed time: 20.37042373 µs
+    getValue(y.shape)>           Elapsed time: 11.65154456 µs
+    z = np.random.rand(1000000)> Elapsed time: 12.649986593 ms
+    getValue(z.shape)>           Elapsed time: 11.224750006 µs
+    xfer array                   Elapsed time: 14.170212113 ms
+
+Example with matplotlib
+-----------------------
+
+
+    import jep._
+
+    object Tester {
+
+      def plot: Unit = {
+        println("plot")
+        val jep = new Jep(new JepConfig().addSharedModules("numpy", "matplotlib"))
+
+        jep.eval("import numpy as np")
+        jep.eval("import matplotlib")
+        jep.eval("matplotlib.use('Agg')")
+        jep.eval("import matplotlib.pyplot as plt")
+
+        jep.eval("t = np.arange(0.0, 2.0, 0.01)")
+        jep.eval("s = 1 + np.sin(2 * np.pi * t)")
+
+        jep.eval("fig, ax = plt.subplots()")
+        jep.eval("ax.plot(t, s)")
+
+        jep.eval("fig.savefig('test')")
+      }
+
+      def main(args: Array[String]): Unit = {
+        plot
+      }
+    }
+
+sbt
+---
+
+We suppose that we got jep from "pip install --user jep". Then build.sbt will look like:
+
+    name := "testjep"
+    version := "0.1"
+    scalaVersion := "2.11.8"
+
+    unmanagedBase := file("/home/christian.arnault/.local/lib/python3.5/site-packages/jep")
+
+
+    > sbt clean assembly "runMain ca.Tester"
+
+
+## Support
+
+<p align="center"><img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/lal_logo.jpg"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/psud.png"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/1012px-Centre_national_de_la_recherche_scientifique.svg.png"/></p>
+
 
