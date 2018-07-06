@@ -18,6 +18,10 @@ Generally speaking, since we are mainly concerned with the use of Apache Spark, 
 we mainly try to interface all scientific oriented languages to Scala.
 
 1. [Using JNA](#using-jna)
+1. [Using the repository](#Using-the-repository)
+1. [Utilisation du package Jep pour interfacer Scala et Python](#jep)
+1. [Support](#support)
+
 
 ## Using JNA <a name="using-jna"></a>
 
@@ -394,7 +398,7 @@ This tuto directory includes:
     + make run triggers all
 
 
-## Using the repository
+## Using the repository <a name="Using-the-repository"></a>
 
 This development tries to apply the explanations written in this document. This is a SBT based structure,
 ie. sources are located in the "src" directory, with the following structure:
@@ -443,7 +447,7 @@ Running the test program:
 > ./run.sh
 ```
 
-## Utilisation du package Jep pour interfacer Scala et Python.
+## Utilisation du package Jep pour interfacer Scala et Python. <a name="jep"></a>
 
 
 Références:
@@ -533,7 +537,7 @@ We suppose that we got jep from "pip install --user jep". Then build.sbt will lo
     > sbt clean assembly "runMain ca.Tester"
 ```
 
-## Support
+## Support <a name="support"></a>
 
 <p align="center"><img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/lal_logo.jpg"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/psud.png"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/1012px-Centre_national_de_la_recherche_scientifique.svg.png"/></p>
 
