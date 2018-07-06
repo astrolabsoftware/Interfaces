@@ -17,6 +17,8 @@ This describes the issues, problems, tools implied in interfacing various langua
 Generally speaking, since we are mainly concerned with the use of Apache Spark, which is mainly coded in Scala,
 we mainly try to interface all scientific oriented languages to Scala.
 
+1. [Using JNA](Using JNA)
+
 ## Using JNA
 
 ### How to link C/C++/Fortran -> Scala
