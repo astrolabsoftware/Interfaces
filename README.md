@@ -23,7 +23,7 @@ we mainly try to interface all scientific oriented languages to Scala.
    1. [Using JNA](Using-JNA)
       1. [How to link C/C++/Fortran -> Scala](How-to-link-C/C++/Fortran-->-Scala)
       1. [Exchanging structures](Exchanging-structures)
-      1. [Using values by reference (ie: using pointers)](Using-values-by-reference--ie:-using-pointers-)
+      1. [Using values by reference (ie: using pointers)](Using-values-by-reference--ie--using-pointers-)
       1. [How use external functions in a Spark pipeline](How-use-external-functions-in-a-Spark-pipeline)
       1. [Issues related with C++](Issues-related-with-C++)
       1. [Various tutos to explicit use cases](Various-tutos-to-explicit-use-cases)
@@ -31,7 +31,7 @@ we mainly try to interface all scientific oriented languages to Scala.
       1. [Compiling & building](Compiling-&-building)
    1. [Utilisation du package Jep pour interfacer Scala et Python.](Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python.)
       1. [One example](One-example)
-      1. [Result of the bench:](Result-of-the-bench:)
+      1. [Result of the bench:](Result-of-the-bench-)
       1. [Example with matplotlib](Example-with-matplotlib)
       1. [With sbt](With-sbt)
    1. [Support](Support)
@@ -145,7 +145,7 @@ the ordered list of field names of the structure (to help JNA to perform introsp
 Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
 
 
-### Using values by reference (ie: using pointers) <a name="Using-values-by-reference--ie:-using-pointers-"> </a>
+### Using values by reference (ie: using pointers) <a name="Using-values-by-reference--ie--using-pointers-"> </a>
 
 A value (in the Scala/Java world) can be viewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
 (and XxxByReference for other Scala/Java).
@@ -493,7 +493,7 @@ jep.set("t", nd)
 }
 ```
 
-### Result of the bench: <a name="Result-of-the-bench:"> </a>
+### Result of the bench: <a name="Result-of-the-bench-"> </a>
 
 ```
 x=10>                        Elapsed time: 0.276785568 µs

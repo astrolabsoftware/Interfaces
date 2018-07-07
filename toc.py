@@ -11,6 +11,7 @@ def makeurl(title):
     url = re.sub(" ", "-", title)
     url = re.sub("[(]", "-", url)
     url = re.sub("[)]", "-", url)
+    url = re.sub("[:]", "-", url)
     return url
 
 INDOC = False
