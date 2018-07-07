@@ -7,6 +7,11 @@ import os
 def mylen(s):
     return(len(s))
 
+def makeurl(title):
+    url = re.sub(" ", "-", title)
+    url = re.sub("[(]", "-", url)
+    url = re.sub("[)]", "-", url)
+    return url
 
 INDOC = False
 
@@ -26,7 +31,7 @@ def read(file_name):
                 head = m.group("level")
                 level = mylen(head)
                 title = m.group('title').strip()
-                url = re.sub(" ", "-", title)
+                url = makeurl(title)
                 ##print('{} {} <a name="{}"> </a>'.format(head, title, url))
                 toc.append((title, level, url))
             else:
@@ -48,7 +53,7 @@ def read(file_name):
                     head = m.group("level")
                     level = mylen(head)
                     title = m.group('title').strip()
-                    url = re.sub(" ", "-", title)
+                    url = makeurl(title)
                     g.write('{} {} <a name="{}"> </a>\n'.format(head, title, url))
                 elif line == "<!-- toc -->":
                     g.write(line + '\n')
