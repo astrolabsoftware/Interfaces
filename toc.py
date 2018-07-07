@@ -4,6 +4,10 @@
 import re
 import os
 
+STARTTOC = "<!-- toc -->"
+ENDTOC = "<!-- endtoc -->"
+TITLETOC = "## Contents:"
+
 def mylen(s):
     return(len(s))
 
@@ -28,6 +32,8 @@ def read(file_name):
         for line in f:
             line = line.strip().decode('utf-8')
             if re.match("[#]+[ ].*", line):
+                if line == TITLETOC:
+                    continue
                 m = re.match("(?P<level>[#]+)[ ]+(?P<title>[^<]*)([<]a[ ]name[=])*", line)
                 head = m.group("level")
                 level = mylen(head)
@@ -44,7 +50,7 @@ def read(file_name):
             for line in f:
                 line = line.strip().decode('utf-8')
                 if INDOC:
-                    if line == "<!-- endtoc -->":
+                    if line == ENDTOC:
                         INDOC = False
                     else:
                         continue
@@ -56,9 +62,9 @@ def read(file_name):
                     title = m.group('title').strip()
                     url = makeurl(title)
                     g.write('{} {} <a name="{}"> </a>\n'.format(head, title, url))
-                elif line == "<!-- toc -->":
+                elif line == STARTTOC:
                     g.write(line + '\n')
-                    g.write("\n## Contents:\n\n")
+                    g.write("\n" + TITLETOC + "\n\n")
                     for item in toc:
                         title = item[0]
                         level = item[1] - 1
