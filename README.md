@@ -1,4 +1,4 @@
-# Multi Language Interfaces
+# Multi Language Interfaces <a name="Multi-Language-Interfaces"> </a>
 
 This product proposes some way to interface different coding languages implied in the process
 of scientific programming in the context of distributed programming such as Apache Spark,
@@ -19,30 +19,46 @@ we mainly try to interface all scientific oriented languages to Scala.
 
 
 <!-- toc -->
+1. [Multi Language Interfaces](Multi-Language-Interfaces)
+  1. [Using JNA](Using-JNA)
+    1. [How to link C/C++/Fortran -> Scala](How-to-link-C/C++/Fortran-->-Scala)
+    1. [Exchanging structures](Exchanging-structures)
+    1. [Using values by reference (ie: using pointers)](Using-values-by-reference-(ie:-using-pointers))
+    1. [How use external functions in a Spark pipeline](How-use-external-functions-in-a-Spark-pipeline)
+    1. [Issues related with C++](Issues-related-with-C++)
+    1. [Various tutos to explicit use cases](Various-tutos-to-explicit-use-cases)
+  1. [Using the repository](Using-the-repository)
+    1. [Compiling & building](Compiling-&-building)
+  1. [Utilisation du package Jep pour interfacer Scala et Python.](Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python.)
+    1. [One example](One-example)
+    1. [Result of the bench:](Result-of-the-bench:)
+    1. [Example with matplotlib](Example-with-matplotlib)
+    1. [With sbt](With-sbt)
+  1. [Support](Support)
 <!-- endtoc -->
 
 
-## Using JNA <a name="using-jna"></a>
+## Using JNA <a name="Using-JNA"> </a>
 
-### How to link C/C++/Fortran -> Scala
+### How to link C/C++/Fortran -> Scala <a name="How-to-link-C/C++/Fortran-->-Scala"> </a>
 
 - we consider a library with offering entry points (C/C++/Fortran)
 
-  - so far the following types haves been tested:
+- so far the following types haves been tested:
 
 ```
 
-      C         Scala
-     -------------------------
-      int       Int
-      double    Double
-      double[]  Array[Double]
+C         Scala
+-------------------------
+int       Int
+double    Double
+double[]  Array[Double]
 
 ```
 
 - How to declare those entry points using JNA:
 
-  - import the JNA stuff:
+- import the JNA stuff:
 
 ```
 
@@ -50,26 +66,26 @@ import com.sun.jna.{Library, Native, Platform}
 
 ```
 
-  - create a Scala trait to declare the signature of all external entry points, using a Scala syntax
+- create a Scala trait to declare the signature of all external entry points, using a Scala syntax
 
 ```
 
 // declaring to JNA
 trait EntryPoints extends Library {
-  def mysum(x: Int, y: Int): Int
-  def mymultiply(x: Double, y: Double): Double
-  def myarray(x: Array[Double], arrayln: Int): Unit
+def mysum(x: Int, y: Int): Int
+def mymultiply(x: Double, y: Double): Double
+def myarray(x: Array[Double], arrayln: Int): Unit
 }
 
 ```
 
-  - install, within a Scala object, the loading actions to load the shared libraries implementing the external functions
+- install, within a Scala object, the loading actions to load the shared libraries implementing the external functions
 
 ```
 
 object Libraries {
-  def sum = Native.loadLibrary("sum", classOf[EntryPoints]).asInstanceOf[EntryPoints]
-  def mul = Native.loadLibrary("mul", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+def sum = Native.loadLibrary("sum", classOf[EntryPoints]).asInstanceOf[EntryPoints]
+def mul = Native.loadLibrary("mul", classOf[EntryPoints]).asInstanceOf[EntryPoints]
 }
 
 
@@ -79,8 +95,8 @@ object Libraries {
 
 ```
 
-    val r1 = Libraries.sum.mysum(1, 2)
-    val r2 = Libraries.mul.mymultiply(1.111, 2.222)
+val r1 = Libraries.sum.mysum(1, 2)
+val r2 = Libraries.mul.mymultiply(1.111, 2.222)
 
 
 ```
@@ -94,8 +110,8 @@ suppose yu create a C function that changes an array as follows:
 ```
 
 void myarray(double array[], int arraylen) {
-  int i = 0;
-  for (i=0; i < arraylen; i++) { array[i] *= 2; }
+int i = 0;
+for (i=0; i < arraylen; i++) { array[i] *= 2; }
 }
 
 
@@ -104,8 +120,8 @@ void myarray(double array[], int arraylen) {
 
 ```
 
-    val a = Array[Double](...)
-    Libraries.mul.myarray(a, a.length)
+val a = Array[Double](...)
+Libraries.mul.myarray(a, a.length)
 
 
 ```
@@ -114,11 +130,11 @@ void myarray(double array[], int arraylen) {
 
 Of course, using JNA has a cost. Comparing calling the math "cos" function from straight Scala and using the C cos through JNA:
 
-  - scala cos> 0.34 µs
+- scala cos> 0.34 µs
 
-  - C cos> 5.3 µs
+- C cos> 5.3 µs
 
-### Exchanging structures
+### Exchanging structures <a name="Exchanging-structures"> </a>
 
 At a first approach we consider the exchange through pointers.
 
@@ -129,19 +145,19 @@ the ordered list of field names of the structure (to help JNA to perform introsp
 Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
 
 
-### Using values by reference (ie: using pointers)
+### Using values by reference (ie: using pointers) <a name="Using-values-by-reference-(ie:-using-pointers)"> </a>
 
 A value (in the Scala/Java world) can be viewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
 (and XxxByReference for other Scala/Java).
 
-(cf. https://java-native-access.github.io/jna/4.2.1/com/sun/jna/ptr/ByReference.html) 
+(cf. https://java-native-access.github.io/jna/4.2.1/com/sun/jna/ptr/ByReference.html)
 
 ```
 ======================  C ===============================
 void modify(int* ptr);
 
 void modify(int* ptr) {
-  *ptr = 12;
+*ptr = 12;
 }
 =========================================================
 
@@ -149,20 +165,20 @@ void modify(int* ptr) {
 import com.sun.jna.ptr.{IntByReference}
 
 trait EntryPoints extends Library {
-  def modify(ptr: IntByReference)
+def modify(ptr: IntByReference)
 }
 
-    ...
-    val ptr = new IntByReference(10)
-    Libraries.native.modify(ptr)
-    println(s"ptr = ${ptr.getValue}")
-    ...
+...
+val ptr = new IntByReference(10)
+Libraries.native.modify(ptr)
+println(s"ptr = ${ptr.getValue}")
+...
 
 ==========================================================
 ```
 
 
-### How use external functions in a Spark pipeline
+### How use external functions in a Spark pipeline <a name="How-use-external-functions-in-a-Spark-pipeline"> </a>
 
 The principle is to dynamically load the shared libraries right when it's needed, ie. within the lambda, executed
 in the Spark operation (map/reduce/...) right when it's needed, ie. before calling the external functions.
@@ -172,14 +188,14 @@ command line.
 
 ```
 
-    val l = sc.parallelize((1 to 10)).map(x => {LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)})
+val l = sc.parallelize((1 to 10)).map(x => {LibraryLoader.loadsum; Libraries.sum.mysum(x, 12)})
 
 ```
 
 It should be noted that the loader operation will ensure that the shared library(ies) will be serialized, then
 transparently deployed to all workers
 
-### Issues related with C++
+### Issues related with C++ <a name="Issues-related-with-C++"> </a>
 
 The Jna's API is only able to understand C types. Then when dealing with C++ coding, a mangling is applied to
 function names (to support mutiple function signatures !!). The declaration of native functions in the Scala/Java
@@ -209,8 +225,8 @@ using namespace std;
 
 void _myconcat (const string a, const string b)
 {
-    const string r = a + b;
-    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+const string r = a + b;
+cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
 }
 
 
@@ -226,21 +242,21 @@ flavour has to be introduced:
 using namespace std;
 
 extern "C" {
-  void myconcat (const char* a, const char* b);
+void myconcat (const char* a, const char* b);
 }
 
 void _myconcat (const string a, const string b):
 
 void myconcat (const char* a, const char* b)
 {
-    cout << "myconcat> " << " a=" << a << " b=" << b << endl;
-    _myconcat(string(a), string(b)).c_str();
+cout << "myconcat> " << " a=" << a << " b=" << b << endl;
+_myconcat(string(a), string(b)).c_str();
 }
 
 void _myconcat (const string a, const string b)
 {
-    const string r = a + b;
-    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+const string r = a + b;
+cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
 }
 
 
@@ -269,23 +285,23 @@ Then we change the function so as it returns the result of the concatenation:
 using namespace std;
 
 extern "C" {
-  const char* myconcat (const char* a, const char* b);
+const char* myconcat (const char* a, const char* b);
 }
 
 const string _myconcat (const string a, const string b);
 
 const char* myconcat (const char* a, const char* b)
 {
-    static const char* r = _myconcat(string(a), string(b)).c_str();
-    cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
-    return r;
+static const char* r = _myconcat(string(a), string(b)).c_str();
+cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+return r;
 }
 
 const string _myconcat (const string a, const string b)
 {
-    const string r = a + b;
-    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
-    return r;
+const string r = a + b;
+cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+return r;
 }
 ```
 
@@ -294,14 +310,14 @@ if we run this implementation:
 ```
 int main()
 {
-  const string result = _myconcat("aa", "bb");
-  cout << "Result = " << result << endl;
+const string result = _myconcat("aa", "bb");
+cout << "Result = " << result << endl;
 
 
-  const char* result2 = myconcat("aaa", "bbb");
-  cout << "Result = " << result2 << endl;
+const char* result2 = myconcat("aaa", "bbb");
+cout << "Result = " << result2 << endl;
 
-  return 0;
+return 0;
 }
 
 > ./mytest
@@ -328,31 +344,31 @@ destroyed).
 using namespace std;
 
 extern "C" {
-  const char* myconcat (const char* a, const char* b);
-  void myfree(const void* str);
+const char* myconcat (const char* a, const char* b);
+void myfree(const void* str);
 }
 
 const string _myconcat (const string a, const string b);
 
 const char* myconcat (const char* a, const char* b)
 {
-    static const char* r = _myconcat(string(a), string(b)).c_str();
-    void* rr = malloc(strlen(r) + 1);
-    cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << " pointer" << rr << endl;
-    strcpy((char*) rr, r);
-    return (char*) rr;
+static const char* r = _myconcat(string(a), string(b)).c_str();
+void* rr = malloc(strlen(r) + 1);
+cout << "myconcat> " << " a=" << a << " b=" << b << " r=" << r << " pointer" << rr << endl;
+strcpy((char*) rr, r);
+return (char*) rr;
 }
 
 void myfree(const void* str) {
-    cout << "myfree> " << " pointer=" << str << endl;
-    free((void*) str);
+cout << "myfree> " << " pointer=" << str << endl;
+free((void*) str);
 }
 
 const string _myconcat (const string a, const string b)
 {
-    const string r = a + b;
-    cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
-    return r;
+const string r = a + b;
+cout << "_myconcat> " << " a=" << a << " b=" << b << " r=" << r << endl;
+return r;
 }
 ```
 
@@ -374,13 +390,13 @@ myfree>  pointer=0x1ad2c30
 
 
 
-### Various tutos to explicit use cases
+### Various tutos to explicit use cases <a name="Various-tutos-to-explicit-use-cases"> </a>
 
 References:
 
 - https://github.com/java-native-access/jna
 - https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
-- https://java-native-access.github.io/jna/4.2.0/overview-summary.html 
+- https://java-native-access.github.io/jna/4.2.0/overview-summary.html
 - http://jnaexamples.blogspot.com/2012/03/java-native-access-is-easy-way-to.html
 - https://www.sderosiaux.com/2016/08/03/jna-java-native-access-enjoy-the-native-functions
 
@@ -390,14 +406,14 @@ This tuto directory includes:
 - One Java file to declare the entry points: ca/CUDF.java
 - One Java application : ca/App.java
 - One Makefile implementing some targets:
-    + make clean
-    + make lib
-    + make classes
-    + make all = lib + classes
-    + make run triggers all
++ make clean
++ make lib
++ make classes
++ make all = lib + classes
++ make run triggers all
 
 
-## Using the repository <a name="Using-the-repository"></a>
+## Using the repository <a name="Using-the-repository"> </a>
 
 This development tries to apply the explanations written in this document. This is a SBT based structure,
 ie. sources are located in the "src" directory, with the following structure:
@@ -421,7 +437,7 @@ At the top level, are the management tools:
 - build.sbt (together with project/* configuration files for SBT) to build and test the Scala elements.
 - run.sh, shell script to run the Spark based application.
 
-### Compiling & building
+### Compiling & building <a name="Compiling-&-building"> </a>
 
 Building the shared library grouping all C/C++ modules:
 
@@ -446,7 +462,7 @@ Running the test program:
 > ./run.sh
 ```
 
-## Utilisation du package Jep pour interfacer Scala et Python. <a name="jep"></a>
+## Utilisation du package Jep pour interfacer Scala et Python. <a name="Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python."> </a>
 
 
 Références:
@@ -454,89 +470,89 @@ Références:
 * https://pypi.python.org/pypi/jep
 * https://github.com/ninia/jep
 
-### One example
+### One example <a name="One-example"> </a>
 
 ```
-    val jep = new Jep(new JepConfig().addSharedModules("numpy"))
+val jep = new Jep(new JepConfig().addSharedModules("numpy"))
 
-    jep.eval("import numpy as np")
+jep.eval("import numpy as np")
 
-    val arraySize = 1000000
+val arraySize = 1000000
 
-    jep.set("x", 10)
-    jep.getValue("x")
-    jep.eval("y = np.random.rand(2, 3)")
-    jep.getValue("y.shape")
-    jep.eval("z = np.random.rand(arraySize)")
-    jep.getValue("z.shape")
+jep.set("x", 10)
+jep.getValue("x")
+jep.eval("y = np.random.rand(2, 3)")
+jep.getValue("y.shape")
+jep.eval("z = np.random.rand(arraySize)")
+jep.getValue("z.shape")
 
-    {
-      val f = Array.fill(arraySize)(Random.nextFloat)
-      val nd = new NDArray[Array[Float]](f, arraySize)
-      jep.set("t", nd)
-    }
+{
+val f = Array.fill(arraySize)(Random.nextFloat)
+val nd = new NDArray[Array[Float]](f, arraySize)
+jep.set("t", nd)
+}
 ```
 
-### Result of the bench:
+### Result of the bench: <a name="Result-of-the-bench:"> </a>
 
 ```
-    x=10>                        Elapsed time: 0.276785568 µs
-    getValue(x)>                 Elapsed time: 7.149102638 µs
-    y = np.random.rand(2, 3)>    Elapsed time: 20.37042373 µs
-    getValue(y.shape)>           Elapsed time: 11.65154456 µs
-    z = np.random.rand(1000000)> Elapsed time: 12.649986593 ms
-    getValue(z.shape)>           Elapsed time: 11.224750006 µs
-    xfer array                   Elapsed time: 14.170212113 ms
+x=10>                        Elapsed time: 0.276785568 µs
+getValue(x)>                 Elapsed time: 7.149102638 µs
+y = np.random.rand(2, 3)>    Elapsed time: 20.37042373 µs
+getValue(y.shape)>           Elapsed time: 11.65154456 µs
+z = np.random.rand(1000000)> Elapsed time: 12.649986593 ms
+getValue(z.shape)>           Elapsed time: 11.224750006 µs
+xfer array                   Elapsed time: 14.170212113 ms
 ```
 
-### Example with matplotlib
+### Example with matplotlib <a name="Example-with-matplotlib"> </a>
 
 ```
-    import jep._
+import jep._
 
-    object Tester {
+object Tester {
 
-      def plot: Unit = {
-        println("plot")
-        val jep = new Jep(new JepConfig().addSharedModules("numpy", "matplotlib"))
+def plot: Unit = {
+println("plot")
+val jep = new Jep(new JepConfig().addSharedModules("numpy", "matplotlib"))
 
-        jep.eval("import numpy as np")
-        jep.eval("import matplotlib")
-        jep.eval("matplotlib.use('Agg')")
-        jep.eval("import matplotlib.pyplot as plt")
+jep.eval("import numpy as np")
+jep.eval("import matplotlib")
+jep.eval("matplotlib.use('Agg')")
+jep.eval("import matplotlib.pyplot as plt")
 
-        jep.eval("t = np.arange(0.0, 2.0, 0.01)")
-        jep.eval("s = 1 + np.sin(2 * np.pi * t)")
+jep.eval("t = np.arange(0.0, 2.0, 0.01)")
+jep.eval("s = 1 + np.sin(2 * np.pi * t)")
 
-        jep.eval("fig, ax = plt.subplots()")
-        jep.eval("ax.plot(t, s)")
+jep.eval("fig, ax = plt.subplots()")
+jep.eval("ax.plot(t, s)")
 
-        jep.eval("fig.savefig('test')")
-      }
+jep.eval("fig.savefig('test')")
+}
 
-      def main(args: Array[String]): Unit = {
-        plot
-      }
-    }
+def main(args: Array[String]): Unit = {
+plot
+}
+}
 ```
 
-### With sbt
+### With sbt <a name="With-sbt"> </a>
 
 
 We suppose that we got jep from "pip install --user jep". Then build.sbt will look like:
 
 ```
-    name := "testjep"
-    version := "0.1"
-    scalaVersion := "2.11.8"
+name := "testjep"
+version := "0.1"
+scalaVersion := "2.11.8"
 
-    unmanagedBase := file("/home/christian.arnault/.local/lib/python3.5/site-packages/jep")
+unmanagedBase := file("/home/christian.arnault/.local/lib/python3.5/site-packages/jep")
 
 
-    > sbt clean assembly "runMain ca.Tester"
+> sbt clean assembly "runMain ca.Tester"
 ```
 
-## Support <a name="support"></a>
+## Support <a name="Support"> </a>
 
 <p align="center"><img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/lal_logo.jpg"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/psud.png"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/1012px-Centre_national_de_la_recherche_scientifique.svg.png"/></p>
 
