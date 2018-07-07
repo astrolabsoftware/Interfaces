@@ -1,3 +1,4 @@
+
 # Multi Language Interfaces <a name="Multi-Language-Interfaces"> </a>
 
 This product proposes some way to interface different coding languages implied in the process
@@ -20,7 +21,7 @@ we mainly try to interface all scientific oriented languages to Scala.
 ___
 <!-- toc -->
 
-Contents:
+## Contents:
 
 1. [Multi Language Interfaces](Multi-Language-Interfaces)
    1. [Using JNA](Using-JNA)
