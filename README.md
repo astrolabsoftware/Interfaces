@@ -25,6 +25,7 @@ ___
 
 1. [Multi Language Interfaces](Multi-Language-Interfaces)
    1. [Using JNA](Using-JNA)
+      1. [References for JNA](References-for-JNA)
       1. [How to link C/C++/Fortran -> Scala](How-to-link-C/C++/Fortran-->-Scala)
       1. [Exchanging structures](Exchanging-structures)
       1. [Using values by reference (ie: using pointers)](Using-values-by-reference--ie--using-pointers-)
@@ -45,7 +46,26 @@ ___
 
 ## Using JNA <a name="Using-JNA"> </a>
 
+JNA is a new generation of tools meant to interface JVM with native (compiled) code. It uses JNI to
+dynamically (using the introspection features of Java) connect to compiled and linked entry points.
+
+Basic data types (scalars and arrays) are directly usable, including ByReference access.
+
+Complexed types (structures) need the construction of a Java equivalent Structure which requires an ordering operation
+for the structure fields only available in Java, and based upon the introspection from Java.
+
+### References for JNA <a name="References-for-JNA"> </a>
+
+- https://github.com/java-native-access/jna
+- https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
+- https://java-native-access.github.io/jna/4.2.0/overview-summary.html
+- http://jnaexamples.blogspot.com/2012/03/java-native-access-is-easy-way-to.html
+- https://www.sderosiaux.com/2016/08/03/jna-java-native-access-enjoy-the-native-functions
+
+
 ### How to link C/C++/Fortran -> Scala <a name="How-to-link-C/C++/Fortran-->-Scala"> </a>
+
+To explain we start from a set of examples.
 
 - we consider a library with offering entry points (C/C++/Fortran)
 
@@ -396,14 +416,6 @@ myfree>  pointer=0x1ad2c30
 
 
 ### Various tutos to explicit use cases <a name="Various-tutos-to-explicit-use-cases"> </a>
-
-References:
-
-- https://github.com/java-native-access/jna
-- https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
-- https://java-native-access.github.io/jna/4.2.0/overview-summary.html
-- http://jnaexamples.blogspot.com/2012/03/java-native-access-is-easy-way-to.html
-- https://www.sderosiaux.com/2016/08/03/jna-java-native-access-enjoy-the-native-functions
 
 This tuto directory includes:
 
