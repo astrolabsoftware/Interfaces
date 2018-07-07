@@ -19,6 +19,9 @@ we mainly try to interface all scientific oriented languages to Scala.
 
 ___
 <!-- toc -->
+
+Contents:
+
 1. [Multi Language Interfaces](Multi-Language-Interfaces)
    1. [Using JNA](Using-JNA)
       1. [How to link C/C++/Fortran -> Scala](How-to-link-C/C++/Fortran-->-Scala)

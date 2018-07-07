@@ -58,7 +58,7 @@ def read(file_name):
                     g.write('{} {} <a name="{}"> </a>\n'.format(head, title, url))
                 elif line == "<!-- toc -->":
                     g.write(line + '\n')
-                    g.write("Contents:" + '\n')
+                    g.write("\nContents:\n\n")
                     for item in toc:
                         title = item[0]
                         level = item[1] - 1
