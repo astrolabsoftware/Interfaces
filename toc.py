@@ -64,6 +64,7 @@ def read(file_name):
                     g.write('{} {} <a name="{}"> </a>\n'.format(head, title, url))
                 elif line == STARTTOC:
                     g.write(line + '\n')
+                    g.write("___\n")
                     g.write("\n" + TITLETOC + "\n\n")
                     for item in toc:
                         title = item[0]
@@ -71,6 +72,9 @@ def read(file_name):
                         url = item[2]
 
                         g.write("{}1. [{}]({})\n".format("   "*level, title, url))
+
+                    g.write("___\n\n")
+
                     INDOC = True
                 else:
                     g.write(line + '\n')

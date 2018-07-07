@@ -18,8 +18,8 @@ This describes the issues, problems, tools implied in interfacing various langua
 Generally speaking, since we are mainly concerned with the use of Apache Spark, which is mainly coded in Scala,
 we mainly try to interface all scientific oriented languages to Scala.
 
-___
 <!-- toc -->
+___
 
 ## Contents:
 
@@ -39,8 +39,9 @@ ___
       1. [Example with matplotlib](Example-with-matplotlib)
       1. [With sbt](With-sbt)
    1. [Support](Support)
-<!-- endtoc -->
 ___
+
+<!-- endtoc -->
 
 ## Using JNA <a name="Using-JNA"> </a>
 

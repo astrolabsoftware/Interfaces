@@ -18,7 +18,14 @@ This little python tool generates a "Table Of Contents" (TOC) section within you
 
 ```
 > cd   (where README.md is)
+> vi README.md
+...
+<!-- toc -->
+<!-- endtoc -->
+...
+>
 > python3 toc.py
 ```
 
+Note that, applying again toc.py will update the TOC according the changes made to README.md
 
