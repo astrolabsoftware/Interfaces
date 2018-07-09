@@ -71,7 +71,7 @@ def read(file_name):
                         level = item[1] - 1
                         url = item[2]
 
-                        g.write("{}1. [{}]({})\n".format("   "*level, title, url))
+                        g.write("{}1. [{}](#{})\n".format("   "*level, title, url))
 
                     g.write("___\n\n")
 

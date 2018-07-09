@@ -23,28 +23,28 @@ ___
 
 ## Contents:
 
-1. [Multi Language Interfaces](Multi-Language-Interfaces)
-   1. [Using JNA](Using-JNA)
-      1. [References for JNA](References-for-JNA)
-      1. [How to link C/C++/Fortran -> Scala](How-to-link-C/C++/Fortran-->-Scala)
-      1. [Exchanging structures](Exchanging-structures)
-      1. [Using values by reference (ie: using pointers)](Using-values-by-reference--ie--using-pointers-)
-      1. [How use external functions in a Spark pipeline](How-use-external-functions-in-a-Spark-pipeline)
-      1. [Issues related with C++](Issues-related-with-C++)
-      1. [Various tutos to explicit use cases](Various-tutos-to-explicit-use-cases)
-   1. [Using the repository](Using-the-repository)
-      1. [Compiling & building](Compiling-&-building)
-   1. [Utilisation du package Jep pour interfacer Scala et Python.](Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python.)
-      1. [One example](One-example)
-      1. [Result of the bench:](Result-of-the-bench-)
-      1. [Example with matplotlib](Example-with-matplotlib)
-      1. [With sbt](With-sbt)
-   1. [Support](Support)
+1. [Multi Language Interfaces](#Multi-Language-Interfaces)
+   1. [Using JNA](#Using-JNA)
+      1. [References for JNA](#References-for-JNA)
+      1. [How to link C/C++/Fortran -> Scala](#How-to-link-C/C++/Fortran-->-Scala)
+      1. [Exchanging structures](#Exchanging-structures)
+      1. [Using values by reference (ie: using pointers)](#Using-values-by-reference--ie--using-pointers-)
+      1. [How use external functions in a Spark pipeline](#How-use-external-functions-in-a-Spark-pipeline)
+      1. [Issues related with C++](#Issues-related-with-C++)
+      1. [Various tutos to explicit use cases](#Various-tutos-to-explicit-use-cases)
+   1. [Using the repository](#Using-the-repository)
+      1. [Compiling & building](#Compiling-&-building)
+   1. [Utilisation du package Jep pour interfacer Scala et Python.](#Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python.)
+      1. [One example](#One-example)
+      1. [Result of the bench:](#Result-of-the-bench-)
+      1. [Example with matplotlib](#Example-with-matplotlib)
+      1. [With sbt](#With-sbt)
+   1. [Support](#Support)
 ___
 
 <!-- endtoc -->
 
-## Using JNA<a name="#Using-JNA"></a>
+## Using JNA <a name="Using-JNA"> </a>
 
 JNA is a new generation of tools meant to interface JVM with native (compiled) code. It uses JNI to
 dynamically (using the introspection features of Java) connect to compiled and linked entry points.
