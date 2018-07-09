@@ -18,8 +18,6 @@ This describes the issues, problems, tools implied in interfacing various langua
 Generally speaking, since we are mainly concerned with the use of Apache Spark, which is mainly coded in Scala,
 we mainly try to interface all scientific oriented languages to Scala.
 
-[[_toc_]]
-
 <!-- toc -->
 ___
 
