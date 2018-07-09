@@ -1,5 +1,5 @@
 
-# Multi Language Interfaces <a name="Multi-Language-Interfaces"> </a>
+# Multi Language Interfaces <a name="Multi-Language-Interfaces"></a>
 
 This product proposes some way to interface different coding languages implied in the process
 of scientific programming in the context of distributed programming such as Apache Spark,
@@ -44,7 +44,7 @@ ___
 
 <!-- endtoc -->
 
-## Using JNA <a name="Using-JNA"> </a>
+## Using JNA <a name="Using-JNA"></a>
 
 JNA is a new generation of tools meant to interface JVM with native (compiled) code. It uses JNI to
 dynamically (using the introspection features of Java) connect to compiled and linked entry points.
@@ -54,7 +54,7 @@ Basic data types (scalars and arrays) are directly usable, including ByReference
 Complexed types (structures) need the construction of a Java equivalent Structure which requires an ordering operation
 for the structure fields only available in Java, and based upon the introspection from Java.
 
-### References for JNA <a name="References-for-JNA"> </a>
+### References for JNA <a name="References-for-JNA"></a>
 
 - https://github.com/java-native-access/jna
 - https://maven.java.net/content/repositories/releases/net/java/dev/jna/jna/
@@ -63,7 +63,7 @@ for the structure fields only available in Java, and based upon the introspectio
 - https://www.sderosiaux.com/2016/08/03/jna-java-native-access-enjoy-the-native-functions
 
 
-### How to link C/C++/Fortran -> Scala <a name="How-to-link-C/C++/Fortran-->-Scala"> </a>
+### How to link C/C++/Fortran -> Scala <a name="How-to-link-C/C++/Fortran-->-Scala"></a>
 
 To explain we start from a set of examples.
 
@@ -159,7 +159,7 @@ Of course, using JNA has a cost. Comparing calling the math "cos" function from 
 
 - C cos> 5.3 µs
 
-### Exchanging structures <a name="Exchanging-structures"> </a>
+### Exchanging structures <a name="Exchanging-structures"></a>
 
 At a first approach we consider the exchange through pointers.
 
@@ -170,7 +170,7 @@ the ordered list of field names of the structure (to help JNA to perform introsp
 Once this is done, referenced objects can be used in Java/Scala from/to C/C++.
 
 
-### Using values by reference (ie: using pointers) <a name="Using-values-by-reference--ie--using-pointers-"> </a>
+### Using values by reference (ie: using pointers) <a name="Using-values-by-reference--ie--using-pointers-"></a>
 
 A value (in the Scala/Java world) can be viewed/transmitted by reference using the com.sun.jna.ptr.IntByReference
 (and XxxByReference for other Scala/Java).
@@ -203,7 +203,7 @@ println(s"ptr = ${ptr.getValue}")
 ```
 
 
-### How use external functions in a Spark pipeline <a name="How-use-external-functions-in-a-Spark-pipeline"> </a>
+### How use external functions in a Spark pipeline <a name="How-use-external-functions-in-a-Spark-pipeline"></a>
 
 The principle is to dynamically load the shared libraries right when it's needed, ie. within the lambda, executed
 in the Spark operation (map/reduce/...) right when it's needed, ie. before calling the external functions.
@@ -220,7 +220,7 @@ val l = sc.parallelize((1 to 10)).map(x => {LibraryLoader.loadsum; Libraries.sum
 It should be noted that the loader operation will ensure that the shared library(ies) will be serialized, then
 transparently deployed to all workers
 
-### Issues related with C++ <a name="Issues-related-with-C++"> </a>
+### Issues related with C++ <a name="Issues-related-with-C++"></a>
 
 The Jna's API is only able to understand C types. Then when dealing with C++ coding, a mangling is applied to
 function names (to support mutiple function signatures !!). The declaration of native functions in the Scala/Java
@@ -415,7 +415,7 @@ myfree>  pointer=0x1ad2c30
 
 
 
-### Various tutos to explicit use cases <a name="Various-tutos-to-explicit-use-cases"> </a>
+### Various tutos to explicit use cases <a name="Various-tutos-to-explicit-use-cases"></a>
 
 This tuto directory includes:
 
@@ -430,7 +430,7 @@ This tuto directory includes:
 + make run triggers all
 
 
-## Using the repository <a name="Using-the-repository"> </a>
+## Using the repository <a name="Using-the-repository"></a>
 
 This development tries to apply the explanations written in this document. This is a SBT based structure,
 ie. sources are located in the "src" directory, with the following structure:
@@ -454,7 +454,7 @@ At the top level, are the management tools:
 - build.sbt (together with project/* configuration files for SBT) to build and test the Scala elements.
 - run.sh, shell script to run the Spark based application.
 
-### Compiling & building <a name="Compiling-&-building"> </a>
+### Compiling & building <a name="Compiling-&-building"></a>
 
 Building the shared library grouping all C/C++ modules:
 
@@ -479,7 +479,7 @@ Running the test program:
 > ./run.sh
 ```
 
-## Utilisation du package Jep pour interfacer Scala et Python. <a name="Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python."> </a>
+## Utilisation du package Jep pour interfacer Scala et Python. <a name="Utilisation-du-package-Jep-pour-interfacer-Scala-et-Python."></a>
 
 
 Références:
@@ -487,7 +487,7 @@ Références:
 * https://pypi.python.org/pypi/jep
 * https://github.com/ninia/jep
 
-### One example <a name="One-example"> </a>
+### One example <a name="One-example"></a>
 
 ```
 val jep = new Jep(new JepConfig().addSharedModules("numpy"))
@@ -510,7 +510,7 @@ jep.set("t", nd)
 }
 ```
 
-### Result of the bench: <a name="Result-of-the-bench-"> </a>
+### Result of the bench: <a name="Result-of-the-bench-"></a>
 
 ```
 x=10>                        Elapsed time: 0.276785568 µs
@@ -522,7 +522,7 @@ getValue(z.shape)>           Elapsed time: 11.224750006 µs
 xfer array                   Elapsed time: 14.170212113 ms
 ```
 
-### Example with matplotlib <a name="Example-with-matplotlib"> </a>
+### Example with matplotlib <a name="Example-with-matplotlib"></a>
 
 ```
 import jep._
@@ -553,7 +553,7 @@ plot
 }
 ```
 
-### With sbt <a name="With-sbt"> </a>
+### With sbt <a name="With-sbt"></a>
 
 
 We suppose that we got jep from "pip install --user jep". Then build.sbt will look like:
@@ -569,7 +569,7 @@ unmanagedBase := file("/home/christian.arnault/.local/lib/python3.5/site-package
 > sbt clean assembly "runMain ca.Tester"
 ```
 
-## Support <a name="Support"> </a>
+## Support <a name="Support"></a>
 
 <p align="center"><img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/lal_logo.jpg"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/psud.png"/> <img width="100" src="https://github.com/astrolabsoftware/spark-fits/raw/master/pic/1012px-Centre_national_de_la_recherche_scientifique.svg.png"/></p>
 
