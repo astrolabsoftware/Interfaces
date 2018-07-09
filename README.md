@@ -44,7 +44,7 @@ ___
 
 <!-- endtoc -->
 
-## <a name="Using-JNA">Using JNA</a>
+## Using JNA<a name="#Using-JNA"></a>
 
 JNA is a new generation of tools meant to interface JVM with native (compiled) code. It uses JNI to
 dynamically (using the introspection features of Java) connect to compiled and linked entry points.
