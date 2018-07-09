@@ -92,7 +92,7 @@ class testJNASpark extends FunSuite with BeforeAndAfterAll {
 
   test("Launch a Spark pipeline that calls C functions via JNA"){
 
-    val cores = 100
+    val cores = 50
     val conf = new SparkConf().setMaster("local[*]").setAppName("TSpark").
       set("spark.cores.max", s"$cores").
       set("spark.executor.memory", "200g").

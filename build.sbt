@@ -38,7 +38,7 @@ lazy val root = (project in file(".")).
    publishArtifact in Test := false,
    // Exclude runner class for the coverage
    coverageExcludedPackages := "<empty>",
-   unmanagedBase := file("${HOME}/.local/lib/python3.5/site-packages/jep"),
+   unmanagedBase := file("/usr/local/lib/python3.5/dist-packages/jep"),
    libraryDependencies ++= Seq(
      "net.java.dev.jna" % "jna" % "4.5.1" % "provided",
      "org.apache.spark" %% "spark-core" % "2.1.0" % "provided",
