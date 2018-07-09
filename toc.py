@@ -61,7 +61,7 @@ def read(file_name):
                     level = mylen(head)
                     title = m.group('title').strip()
                     url = makeurl(title)
-                    g.write('{} {} <a name="{}"> </a>\n'.format(head, title, url))
+                    g.write('{} {} <a name="{}"></a>\n'.format(head, title, url))
                 elif line == STARTTOC:
                     g.write(line + '\n')
                     g.write("___\n")
