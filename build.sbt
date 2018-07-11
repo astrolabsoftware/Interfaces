@@ -17,6 +17,12 @@
 import Dependencies._
 import xerial.sbt.Sonatype._
 
+
+//  find /usr -name 'libpython3*.so*' -exec ls -al {} \; -print
+
+fork in Test := true
+
+
 lazy val root = (project in file(".")).
  settings(
    inThisBuild(List(
@@ -39,6 +45,7 @@ lazy val root = (project in file(".")).
    // Exclude runner class for the coverage
    coverageExcludedPackages := "<empty>",
    unmanagedBase := file("/usr/local/lib/python3.5/dist-packages/jep"),
+   envVars in Test := Map("LD_PRELOAD" -> "/usr/lib/x86_64-linux-gnu/libpython3.5m.so"),
    libraryDependencies ++= Seq(
      "net.java.dev.jna" % "jna" % "4.5.1" % "provided",
      "org.apache.spark" %% "spark-core" % "2.1.0" % "provided",
