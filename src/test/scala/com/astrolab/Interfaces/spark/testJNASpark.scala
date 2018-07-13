@@ -108,6 +108,8 @@ class testJNASpark extends FunSuite with BeforeAndAfterAll {
       toArray
 
     println(l.mkString(" "))
+
+    sc.stop
   }
 
 }

@@ -51,9 +51,8 @@ class testJep extends FunSuite with BeforeAndAfterAll {
     val f = Array.fill(arraySize)(Random.nextFloat)
     val nd = new NDArray[Array[Float]](f, arraySize)
     j.set("t", nd)
-    j.eval("t2 = np.array(t)")
-    j.eval("shape = t2.shape")
-    val shape = j.getValue("t2.shape").asInstanceOf[java.util.List[Int]].asScala
+    j.eval("shape = t.shape")
+    val shape = j.getValue("t.shape").asInstanceOf[java.util.List[Int]].asScala
     println(s"shape = $shape")
     val size = j.getValue("shape[0]")
     assert(size == arraySize)
