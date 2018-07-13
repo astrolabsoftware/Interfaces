@@ -22,6 +22,12 @@ import xerial.sbt.Sonatype._
 
 fork in Test := true
 
+lazy val jep = settingKey[String]("location of the jep package")
+lazy val preload = settingKey[String]("Python library to preload")
+
+//lazy val preload = "/usr/lib/x86_64-linux-gnu/libpython3.5m.so"
+//lld := baseDirectory.value + ":" + jep
+// "/mnt/d/workspace/Interfaces:/usr/local/lib/python3.5/dist-packages/jep"
 
 lazy val root = (project in file(".")).
  settings(
@@ -44,8 +50,11 @@ lazy val root = (project in file(".")).
    publishArtifact in Test := false,
    // Exclude runner class for the coverage
    coverageExcludedPackages := "<empty>",
-   unmanagedBase := file("/usr/local/lib/python3.5/dist-packages/jep"),
-   envVars in Test := Map("LD_PRELOAD" -> "/usr/lib/x86_64-linux-gnu/libpython3.5m.so"),
+   jep := "/usr/local/lib/python3.5/dist-packages/jep",
+   preload := "/usr/lib/x86_64-linux-gnu/libpython3.5m.so",
+   unmanagedBase := file(jep.value),
+   envVars in Test := Map("LD_PRELOAD" -> preload.value,
+     "LD_LIBRARY_PATH" -> s"${baseDirectory.value}:${jep.value}"),
    libraryDependencies ++= Seq(
      "net.java.dev.jna" % "jna" % "4.5.1" % "provided",
      "org.apache.spark" %% "spark-core" % "2.1.0" % "provided",
