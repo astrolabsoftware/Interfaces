@@ -53,7 +53,6 @@ lazy val root = (project in file(".")).
      "LD_LIBRARY_PATH" -> s"${baseDirectory.value}"),
    libraryDependencies ++= Seq(
      "net.java.dev.jna" % "jna" % "4.5.1",
-     // "black.ninia" % "jep" % "3.7.1",
      "org.apache.spark" %% "spark-core" % "2.1.0" % "provided",
      "org.apache.spark" %% "spark-sql" % "2.1.0" % "provided",
      "org.scalactic" %% "scalactic" % "3.0.5" % "test",
