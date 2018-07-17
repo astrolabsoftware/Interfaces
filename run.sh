@@ -14,6 +14,7 @@
 # limitations under the License.
 #---------------------------------------------------
 
+
 SBT_VERSION=2.11.8
 SBT_VERSION_SPARK=2.11
 
@@ -21,29 +22,40 @@ SBT_VERSION_SPARK=2.11
 VERSION=0.1.0
 
 # Package it
-sbt ++${SBT_VERSION} package
+# sbt ++${SBT_VERSION} package
+
 
 here=`pwd`
 jna=${HOME}/.ivy2/cache/net.java.dev.jna/jna/jars/jna-4.5.1.jar
+jepdir="/usr/local/lib/python3.5/dist-packages/jep/"
+jep="${jepdir}/jep-3.7.1.jar"
 
-heap="-Xms1g"
-
-export LD_LIBRARY_PATH=${here}
-export JAVA_OPTS="-Xmx8G -Xms8G"
+export LD_LIBRARY_PATH=${here}:${jepdir}
+export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libpython3.5m.so"
 
 master="--master local[*]"
-class="--class com.astrolab.Interfaces.HelloWorld"
-jars="--jars=${jna}"
+class1="--class com.astrolab.Interfaces.spark.TSpark"
+class2="--class com.astrolab.Interfaces.suite.TestSuite"
 files="--files=${here}/libmy_udf.so"
-target="target/scala-${SBT_VERSION_SPARK}/interfaces_${SBT_VERSION_SPARK}-${VERSION}.jar"
+jars="--jars ${jna},${jep}"
+target="target/scala-2.11/interfaces_2.11-0.1.0.jar"
 
-command="spark-submit ${master} ${class} ${jars} ${target}"
+echo "======================================== TSpark ================================="
+class=${class1}
 
-## ${files}
+command="spark-submit ${master} ${files} ${jars} ${class} ${target}"
 
 # Run it!
-echo "${command}"
-${command}
+echo "${command} $*"
+${command} $*
 
+echo "======================================== TestSuite ================================="
 
+class=${class2}
+
+command="spark-submit ${master} ${files} ${jars} ${class} ${target}"
+
+# Run it!
+echo "${command} $*"
+${command} $*
 

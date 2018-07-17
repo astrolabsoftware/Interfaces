@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-package com.astrolab.Interfaces
+package com.astrolab.Interfaces.suite
+
+
+// Imports for JEP
+import jep._
+import scala.util.Random
+import collection.JavaConverters._
+
 
 // Imports for JNA
 import com.sun.jna.{Library, Native, Platform, Structure, Pointer}
@@ -78,7 +85,9 @@ object LibraryLoader {
   }
 }
 
-object HelloWorld {
+object TestSuite {
+
+  val j = new Jep(new JepConfig().addSharedModules("numpy"))
 
   val rand = scala.util.Random
 
@@ -243,6 +252,58 @@ object HelloWorld {
     assert(s2 == s1*2)
   }
 
+  def testJ = {
+    println("===== Test Jep")
+    j.eval("import numpy as np")
+    j.set("x", 10)
+    val x = j.getValue("x")
+    println(s"x = $x")
+    assert(x == 10)
+  }
+
+  def testK = {
+    {
+      j.eval("import numpy as np")
+      assert(true)
+    }
+
+    {
+      j.set("x", 10)
+      val x = j.getValue("x")
+      assert(x == 10)
+    }
+
+    {
+      j.eval("y = np.random.rand(2, 3)")
+      val shape = j.getValue("y.shape").asInstanceOf[java.util.List[Int]].asScala
+      println(s"shape=$shape ${shape.length}")
+      assert(shape.length == 2)
+    }
+
+    {
+      val arraySize = 1000000
+
+      j.set("arraySize", arraySize)
+      j.eval("z = np.random.rand(arraySize)")
+      val shape = j.getValue("z.shape").asInstanceOf[java.util.List[Int]].asScala
+      println(s"shape = $shape")
+      assert(shape.length == 1)
+    }
+
+    {
+      val arraySize = 2000000
+
+      val f = Array.fill(arraySize)(Random.nextFloat)
+      val nd = new NDArray[Array[Float]](f, arraySize)
+      j.set("t", nd)
+      j.eval("shape = t.shape")
+      val shape = j.getValue("t.shape").asInstanceOf[java.util.List[Int]].asScala
+      println(s"shape = $shape")
+      val size = j.getValue("shape[0]")
+      assert(size == arraySize)
+    }
+  }
+
 
   def testX = {
     println("===== ")
@@ -275,6 +336,8 @@ object HelloWorld {
 
   def main(args: Array[String]) {
 
+    println(args.mkString(" "))
+
     testA
     testB
     testC
@@ -284,8 +347,10 @@ object HelloWorld {
     testG
     testH
     testI
+    testJ
+    testK
 
-    if (true) test_Spark
+    if (false) test_Spark
   }
 }
 
